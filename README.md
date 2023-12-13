@@ -31,7 +31,7 @@ If you would like to contribute to the Metro Suite of projects, please join our 
 ## Designs
 
 This figma sheet has all the information related to Metro OS so far:
-https://www.figma.com/file/DiabLmhu0w9UYCPzCQVEU2/Metro-UI-Designs?type=design&node-id=294-12&mode=design&t=gwgk9lmTQ42dyshR-0
+[Figma](https://www.figma.com/file/DiabLmhu0w9UYCPzCQVEU2/Metro-UI-Designs?type=design&node-id=294-12&mode=design&t=gwgk9lmTQ42dyshR-00)
 
 ## License
 
