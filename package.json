@@ -6,12 +6,16 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "deploy": "npx expo start --clear"
   },
   "dependencies": {
     "@expo-google-fonts/noto-sans": "^0.2.3",
     "@react-native-async-storage/async-storage": "^1.21.0",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/native-stack": "^6.9.17",
     "expo": "~49.0.15",
+    "expo-app-loading": "^2.1.1",
     "expo-font": "^11.6.0",
     "expo-status-bar": "~1.6.0",
     "nativewind": "^2.0.11",

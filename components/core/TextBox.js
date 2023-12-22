@@ -9,7 +9,7 @@ export const TextBox = ({
     return (
         <TextInput 
             className="bg-[#c9c9c9] w-full h-10 px-4 text-base" 
-            style={fonts.light} 
+            style={fonts.regular} 
             cursorColor={"black"} 
             selectionColor={"#a013ec"} 
             placeholder={"Enter URL"} 
