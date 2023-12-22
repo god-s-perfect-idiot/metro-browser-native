@@ -28,6 +28,11 @@ You can reset the build by running `expo start --clear` or `npm start --clear` o
 If you would like to contribute to this project, please fork this repository and make a pull request.
 If you would like to contribute to the Metro Suite of projects, please join our Discord server. Link yet to come.
 
+## Designs
+
+This figma sheet has all the information related to Metro OS so far:
+[Figma](https://www.figma.com/file/DiabLmhu0w9UYCPzCQVEU2/Metro-UI-Designs?type=design&node-id=294-12&mode=design&t=gwgk9lmTQ42dyshR-00)
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for more information.
