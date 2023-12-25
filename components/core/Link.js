@@ -8,7 +8,7 @@ const Link = ({
     text
 }) => {
     return (
-        <Text className={`${disabled ? "text-[#8a8a8a]" : "text-white"} ${classOverride} lowercase`} style={fonts.light}>
+        <Text className={`${disabled ? "text-[#8a8a8a]" : "text-white"} ${classOverride} lowercase`} style={fonts.regular}>
             {text}
         </Text>
     )
