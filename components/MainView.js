@@ -4,20 +4,20 @@ import WebView from "react-native-webview"
 import BottomBar from "./compound/MainBottomBar"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-export const MainView = ({navigation}) => {
-
-    const [url, setUrl] = useState("");
+export const MainView = ({navigation, route}) => {
+    // idk how but this works. god bless react native
+    const [url, setUrl] = useState(route && route.params && route.params.url || "https://www.google.com");
     const [urlPreview, setUrlPreview] = useState("")
 
     useEffect(() => {
-        async function loadURL() {
-            const URL = await AsyncStorage.getItem("url");
-            setUrl(URL)
-            console.log(URL)
-        }
 
-        loadURL()
-    }, [])
+        // async function loadURL() {
+        //     const URL = await AsyncStorage.getItem("url");
+        //     setUrl(URL)
+        // }
+
+        setUrl(route && route.params && route.params.url || "https://www.google.com")
+    }, [route])
     
     const onURLChange = (e) => {
         if (typeof e === "string") setUrlPreview(e)

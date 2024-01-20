@@ -24,8 +24,8 @@ export default function App() {
   }, [])
 
   const [fontsLoaded] = Font.useFonts({
-    'notoSansLight': require('./assets/fonts/Noto Sans Light.ttf'),
-    'notoSansRegular': require('./assets/fonts/Noto Sans Regular.ttf'),
+    'notoSansLight': require('./assets/fonts/NotoSans_Light.ttf'),
+    'notoSansRegular': require('./assets/fonts/NotoSans_Regular.ttf'),
   });
     
 
