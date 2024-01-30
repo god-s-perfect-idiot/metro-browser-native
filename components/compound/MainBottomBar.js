@@ -35,15 +35,6 @@ const Menu = ({
                     <Link to={"https://google.com"} classOverride="text-xl" text="favourites" onPress={() => navigation.navigate("Favourites")}/>
                     <Link to={"https://google.com"} classOverride="mt-4 text-xl" text="add to favourites"  
                     onPress={() => {
-                        // AsyncStorage.getItem("favourites").then((favourites) => {
-                        //     if (favourites) {
-                        //         const favouritesArray = JSON.parse(favourites);
-                        //         favouritesArray.push(url);
-                        //         AsyncStorage.setItem("favourites", JSON.stringify(favouritesArray));
-                        //     } else {
-                        //         AsyncStorage.setItem("favourites", JSON.stringify([url]));
-                        //     }
-                        // })
                         navigation.navigate("AddToFavourites", {
                             url: url
                         })
@@ -52,7 +43,9 @@ const Menu = ({
                     <Link to={"https://google.com"} classOverride="mt-4 text-xl" text="share page" disabled />
                     <Link to={"https://google.com"} classOverride="mt-4 text-xl" text="pin to start"  disabled/>
                     <Link to={"https://google.com"} classOverride="mt-4 text-xl" text="recent"  disabled/>
-                    <Link to={"https://google.com"} classOverride="mt-4 text-xl" text="settings"  disabled/>
+                    <Link to={"https://google.com"} classOverride="mt-4 text-xl" text="settings"  
+                    onPress={() => navigation.navigate("Settings")}
+                    />
                 </>
             }
         />
