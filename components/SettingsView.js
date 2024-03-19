@@ -45,7 +45,7 @@ export const SettingsView = ({ navigation }) => {
                     }}
                     classOverride="mt-6"
                 />
-                <Text className="text-[#b0b0b0] text-base mt-6" style={fonts.light}>
+                <Text className="text-[#b0b0b0] text-sm mt-6" style={fonts.light}>
                     We'll download full web pages.
                 </Text>
             </View>
@@ -55,13 +55,13 @@ export const SettingsView = ({ navigation }) => {
                     onPress={() => {
                         console.log("clearing history")
                     }}
-                    classOverride="w-[37%]"
+                    classOverride="w-[40%]"
                 />
-                <Text className="text-[#b0b0b0] text-base mt-8" style={fonts.light}>
+                <Text className="text-[#b0b0b0] text-sm mt-8" style={fonts.light}>
                     Deletes all your browsing history, cookies and temporary Internet files from your phone.
                 </Text>
-                <Link classOverride="mt-6 underline text-base" text="Privacy Statement" isLowerCase={false}/>
-                <Link classOverride="mt-6 underline text-base" text="Learn about these settings" isLowerCase={false}/>
+                <Link classOverride="mt-6 underline text-sm" text="Privacy Statement" isLowerCase={false}/>
+                <Link classOverride="mt-6 underline text-sm" text="Learn about these settings" isLowerCase={false}/>
             </View>
         </View>
     )

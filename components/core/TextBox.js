@@ -1,5 +1,6 @@
 import { Text, TextInput, View } from "react-native"
 import { fonts } from "../../styles/fonts"
+import { useState } from "react"
 
 export const TextBox = ({
     defaultValue,
@@ -9,6 +10,7 @@ export const TextBox = ({
     title="",
     placeholder="Enter URL"
 }) => {
+    const [focused, setFocused] = useState(false)
     if (title == "") {
         return (
             <TextInput 
@@ -29,10 +31,12 @@ export const TextBox = ({
                     {title}
                 </Text>
                 <TextInput 
-                    className="bg-[#fff] w-full h-10 px-4 text-base" 
+                    className={`${focused ? "bg-white" : "bg-[#bfbfbf]"}  w-full h-10 px-4 text-base`} 
                     style={fonts.regular} 
                     cursorColor={"black"} 
                     selectionColor={"#a013ec"} 
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
                     placeholder={placeholder} 
                     defaultValue={defaultValue} 
                     onChangeText={onChangeText}
