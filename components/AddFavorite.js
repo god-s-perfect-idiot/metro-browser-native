@@ -19,14 +19,14 @@ export const AddFavorite = ({
                 <View className="w-full h-full flex">
                     <TextBox 
                         title="Name" 
-                        classOverrides="mt-12" 
+                        classOverrides="mt-8" 
                         placeholder={route.params.url}
                         defaultValue={route.params.url}
                         onChangeText={(text) => setTitle(text)}
                     />
                     <TextBox 
                         title="Web address" 
-                        classOverrides="mt-8" 
+                        classOverrides="mt-6" 
                         placeholder={route.params.url}
                         defaultValue={route.params.url}
                         onChangeText={(text) => setUrl(text)}

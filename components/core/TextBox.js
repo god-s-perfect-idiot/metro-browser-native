@@ -27,11 +27,11 @@ export const TextBox = ({
     } else {
         return (
             <View className={`flex w-full ${classOverrides}`}>
-                <Text className="text-[#b0b0b0] text-md mb-1" style={fonts.light}>
+                <Text className="text-[#b0b0b0] text-[13px] mb-1" style={fonts.light}>
                     {title}
                 </Text>
                 <TextInput 
-                    className={`${focused ? "bg-white" : "bg-[#bfbfbf]"}  w-full h-10 px-4 text-base`} 
+                    className={`${focused ? "bg-white" : "bg-[#bfbfbf]"}  w-full h-9 px-4 text-[15px]`} 
                     style={fonts.regular} 
                     cursorColor={"black"} 
                     selectionColor={"#a013ec"} 

@@ -54,13 +54,13 @@ const Menu = ({
         <>
           <Link
             to={"https://google.com"}
-            classOverride="text-xl"
+            classOverride="text-lg"
             text="favourites"
             onPress={() => navigation.navigate("Favourites")}
           />
           <Link
             to={"https://google.com"}
-            classOverride="mt-4 text-xl"
+            classOverride="mt-4 text-lg"
             text="add to favourites"
             onPress={() => {
               navigation.navigate("AddToFavourites", {
@@ -70,31 +70,31 @@ const Menu = ({
           />
           <Link
             to={"https://google.com"}
-            classOverride="mt-4 text-xl"
+            classOverride="mt-4 text-lg"
             text="find on page"
             disabled
           />
           <Link
             to={"https://google.com"}
-            classOverride="mt-4 text-xl"
+            classOverride="mt-4 text-lg"
             text="share page"
             disabled
           />
           <Link
             to={"https://google.com"}
-            classOverride="mt-4 text-xl"
+            classOverride="mt-4 text-lg"
             text="pin to start"
             disabled
           />
           <Link
             to={"https://google.com"}
-            classOverride="mt-4 text-xl"
+            classOverride="mt-4 text-lg"
             text="recent"
             disabled
           />
           <Link
             to={"https://google.com"}
-            classOverride="mt-4 text-xl"
+            classOverride="mt-4 text-lg"
             text="settings"
             onPress={() => navigation.navigate("Settings")}
           />

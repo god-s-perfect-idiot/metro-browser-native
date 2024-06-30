@@ -7,7 +7,7 @@ export const Select = ({ options, onChange, title, classOverride = "" }) => {
     const [expanded, setExpanded] = useState(false);
     return (
         <View className={`flex ${classOverride}`}>
-            <Text className="text-[#b0b0b0] text-sm" style={fonts.light}>
+            <Text className="text-[#b0b0b0] text-[13px]" style={fonts.light}>
                 {title}
             </Text>
             {expanded ? (
@@ -20,7 +20,7 @@ export const Select = ({ options, onChange, title, classOverride = "" }) => {
                                 setExpanded(false);
                             }}>
                                 <View className={`flex flex-row items-center justify-between py-1`}>
-                                    <Text className={`text-base ${selected.value === option.value ? "text-[#a013ec]" : "text-black"}`} style={fonts.regular}>
+                                    <Text className={`text-[15px] ${selected.value === option.value ? "text-[#a013ec]" : "text-black"}`} style={fonts.regular}>
                                         {option.name}
                                     </Text>
                                 </View>
@@ -32,7 +32,7 @@ export const Select = ({ options, onChange, title, classOverride = "" }) => {
                 <View className="mt-2 w-full pr-4 pl-2 py-1 text-base border-white border-2 border-solid justify-center item-center">
                     <TouchableWithoutFeedback onPress={() => setExpanded(true)}>
                         <View className="flex flex-row items-center">
-                            <Text className="text-white text-base" style={fonts.regular}>
+                            <Text className="text-white text-[15px]" style={fonts.regular}>
                                 {selected.name}
                             </Text>
                         </View>
