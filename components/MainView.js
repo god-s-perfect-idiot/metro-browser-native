@@ -67,9 +67,8 @@ export const MainView = ({ navigation, route }) => {
           onLoadEnd={() => setIsLoading(false)}
         />
       ) : (
-        <Text className="text-white">
-          Basic Loader. Replace with WP8 Loader
-        </Text>
+        <View className="bg-white flex-1 h-full w-full">
+        </View>
       )}
       <BottomBar
         url={url}

@@ -29,7 +29,7 @@ export const FavoritesView = ({ navigation }) => {
             <PageTitle title="phone"/>
             <View className="w-full flex flex-col mt-4">
                 {favorites.map((fav, index) => (
-                    <View className="w-full h-12 flex flex-row items-center justify-between">
+                    <View className="w-full h-12 flex flex-row items-center justify-between" key={index}>
                         {/* <Text className="text-white">{fav.name}</Text>
                         <Text className="text-white">{fav.url}</Text> */}
                         <Link

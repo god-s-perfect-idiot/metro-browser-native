@@ -13,21 +13,35 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
 
+  const [fontLoaded, setFontLoaded] = useState(false);
+
   useEffect(() => {
 
+    async function loadFont() {
+      await Font.loadAsync({
+        NotoSans_Light: require("./assets/fonts/NotoSans_Light.ttf"),
+        NotoSans_Regular: require("./assets/fonts/NotoSans_Regular.ttf"),
+        NotoSans_SemiBold: require("./assets/fonts/NotoSans_SemiBold.ttf"),
+        Selawk: require("./assets/fonts/selawk.ttf"),
+        SelawkLight: require("./assets/fonts/selawkl.ttf"),
+        SelawkSemiBold: require("./assets/fonts/selawksb.ttf"),
+      });
+      setFontLoaded(true);
+    }
     async function probeURL() {
       const url = await AsyncStorage.getItem("url");
       if (!url) await AsyncStorage.setItem('url', 'https://www.google.com')
     }
 
     probeURL();
-
+    loadFont();
   }, [])
 
-  const [fontsLoaded] = Font.useFonts({
-    'notoSansLight': require('./assets/fonts/NotoSans_Light.ttf'),
-    'notoSansRegular': require('./assets/fonts/NotoSans_Regular.ttf'),
-  });
+
+
+  if (!fontLoaded) {
+    return null;
+  }
     
 
   return (
