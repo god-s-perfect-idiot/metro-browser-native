@@ -27,9 +27,9 @@ export const FavoritesView = ({ navigation }) => {
             {/* <StatusBar /> */}
             <AppTitle title="Metro Browser"/>
             <PageTitle title="phone"/>
-            <View className="w-full flex flex-col mt-4">
+            <View className="w-full flex flex-col mt-1">
                 {favorites.map((fav, index) => (
-                    <View className="w-full h-12 flex flex-row items-center justify-between" key={index}>
+                    <View className="w-full h-15 flex flex-row items-center justify-between" key={index}>
                         {/* <Text className="text-white">{fav.name}</Text>
                         <Text className="text-white">{fav.url}</Text> */}
                         <Link
@@ -42,7 +42,7 @@ export const FavoritesView = ({ navigation }) => {
                                     })
                                 });
                             }}
-                            classOverride="text-white text-2xl mt-4"
+                            classOverride="text-white text-xl mt-6"
                             isLowerCase={false}
                         />
                     </View>
