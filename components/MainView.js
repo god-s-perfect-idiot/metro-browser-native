@@ -62,7 +62,10 @@ export const MainView = ({ navigation, route }) => {
           className="flex-1 w-full h-full"
           source={{ uri: url }}
           userAgent={agent}
-          onLoadProgress={(e) => setLoader(e.nativeEvent.progress)}
+          onLoadProgress={(e) => {
+            setLoader(e.nativeEvent.progress)
+            setUrl(e.nativeEvent.url)
+          }}
           onLoadStart={() => setIsLoading(true)}
           onLoadEnd={() => setIsLoading(false)}
         />
