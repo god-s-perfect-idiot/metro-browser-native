@@ -40,11 +40,21 @@ export const MainView = ({ navigation, route }) => {
     // fetchAgent();
   }, []);
 
+  // useEffect(() => {
+  //   setUrl(
+  //     (route && route.params && route.params.url) || "https://www.google.com"
+  //   );
+  // }, [route]);
+
   useEffect(() => {
-    setUrl(
-      (route && route.params && route.params.url) || "https://www.google.com"
-    );
-  }, [route]);
+    const fetchData = async () => {
+      const tabData = await AsyncStorage.getItem("tabs");
+      const tab = await AsyncStorage.getItem("tab");
+      const url = JSON.parse(tabData)[tab].url;
+      if (url) setUrl(url);
+    };
+    fetchData();
+  }, []);
 
   const onURLChange = (e) => {
     if (typeof e === "string") setUrlPreview(e);
@@ -63,15 +73,14 @@ export const MainView = ({ navigation, route }) => {
           source={{ uri: url }}
           userAgent={agent}
           onLoadProgress={(e) => {
-            setLoader(e.nativeEvent.progress)
-            setUrl(e.nativeEvent.url)
+            setLoader(e.nativeEvent.progress);
+            setUrl(e.nativeEvent.url);
           }}
           onLoadStart={() => setIsLoading(true)}
           onLoadEnd={() => setIsLoading(false)}
         />
       ) : (
-        <View className="bg-white flex-1 h-full w-full">
-        </View>
+        <View className="bg-white flex-1 h-full w-full"></View>
       )}
       <BottomBar
         url={url}

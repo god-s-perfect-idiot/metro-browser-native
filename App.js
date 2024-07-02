@@ -6,8 +6,9 @@ import { FavoritesView } from './components/FavoritesView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AddFavorite } from './components/AddFavorite';
+import { AddFavorite } from './components/AddFavoriteView';
 import { SettingsView } from './components/SettingsView';
+import { TabsView } from './components/TabsView';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,8 +30,15 @@ export default function App() {
       setFontLoaded(true);
     }
     async function probeURL() {
-      const url = await AsyncStorage.getItem("url");
-      if (!url) await AsyncStorage.setItem('url', 'https://www.google.com')
+      // const tab = await AsyncStorage.getItem("tab");
+      // if (!tab) await AsyncStorage.setItem('tab', '0');
+      const tabData = await AsyncStorage.getItem("tabs");
+      if (!tabData) {
+        await AsyncStorage.setItem('tabs', JSON.stringify([{url: "https://www.google.com"}]))
+        await AsyncStorage.setItem('tab', '0');
+      };
+      // const url = await AsyncStorage.getItem("url");
+      // if (!url) await AsyncStorage.setItem('url', 'https://www.google.com')
     }
 
     probeURL();
@@ -38,11 +46,9 @@ export default function App() {
   }, [])
 
 
-
   if (!fontLoaded) {
     return null;
-  }
-    
+  }    
 
   return (
     <NavigationContainer>
@@ -56,6 +62,7 @@ export default function App() {
         <Stack.Screen name="Favourites" component={FavoritesView} />
         <Stack.Screen name="AddToFavourites" component={AddFavorite}/>
         <Stack.Screen name="Settings" component={SettingsView} />
+        <Stack.Screen name="Tabs" component={TabsView} />
       </Stack.Navigator>
       {/* <View className="flex-1 items-center justify-center bg-black w-full h-full">
         <StatusBar />
