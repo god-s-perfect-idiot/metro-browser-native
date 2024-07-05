@@ -22,6 +22,16 @@ const Menu = ({ navigation }) => {
           <View className="flex flex-col justify-center items-center mx-4 my-2 mb-3 px-1">
             <RoundedButton
               Icon={<Plus width={20} stroke={"white"} strokeWidth={3} />}
+              action={() => {
+                AsyncStorage.getItem("tabs").then((tabs) => {
+                  const newTabs = tabs
+                    ? JSON.parse(tabs).concat({
+                        url: "https://www.google.com",
+                      })
+                    : [{ url: "https://www.google.com" }];
+                  AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
+                    });
+              }}
             />
             {expanded && (
               <View className="flex flex-1 flex-row justify-center mt-1">
@@ -41,17 +51,6 @@ const Menu = ({ navigation }) => {
         </View>
       </TouchableWithoutFeedback>
     </View>
-  );
-  return (
-    <QuickMenu
-      options={[
-        {
-          text: "done",
-          onPress: methods.accept,
-          Icon: <Check width={20} stroke={"white"} strokeWidth={3} />,
-        },
-      ]}
-    />
   );
 };
 

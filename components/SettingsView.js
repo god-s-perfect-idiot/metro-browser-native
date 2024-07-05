@@ -16,9 +16,11 @@ export const SettingsView = ({ navigation }) => {
   useEffect(() => {
     const fetchQuickButton = async () => {
       const quickButton = await AsyncStorage.getItem("quickButton");
+      console.log("as quickButton", quickButton);
       setQuickButton(quickButton);
     };
     fetchQuickButton();
+    console.log("quickButton", quickButton);
   }, []);
 
   return (

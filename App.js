@@ -35,8 +35,10 @@ export default function App() {
       const tabData = await AsyncStorage.getItem("tabs");
       if (!tabData) {
         await AsyncStorage.setItem('tabs', JSON.stringify([{url: "https://www.google.com"}]))
-        await AsyncStorage.setItem('tab', '0');
+        // await AsyncStorage.setItem('tab', '0');
       };
+      const quickButton = await AsyncStorage.getItem("quickButton");
+      if (!quickButton) await AsyncStorage.setItem('quickButton', 'tabs');
       // const url = await AsyncStorage.getItem("url");
       // if (!url) await AsyncStorage.setItem('url', 'https://www.google.com')
     }
