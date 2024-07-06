@@ -54,7 +54,6 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <StatusBar />
       <Stack.Navigator screenOptions={
         {
           headerShown: false
