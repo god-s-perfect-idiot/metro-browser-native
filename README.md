@@ -28,6 +28,12 @@ You can reset the build by running `expo start --clear` or `npm start --clear` o
 If you would like to contribute to this project, please fork this repository and make a pull request.
 If you would like to contribute to the Metro Suite of projects, please join our Discord server. Link yet to come.
 
+## Buy me a coffee
+
+If you would like to support me, you can do so by buying me a coffee. You can do so by clicking the link below:
+https://buymeacoffee.com/godsperfectidiot
+
+
 ## Designs
 
 This figma sheet has all the information related to Metro OS so far:

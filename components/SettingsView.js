@@ -7,8 +7,22 @@ import { fonts } from "../styles/fonts";
 import { Button } from "./core/Button";
 import Link from "./core/Link";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 
 export const SettingsView = ({ navigation }) => {
+
+  const [quickButton, setQuickButton] = useState("tabs");
+
+  useEffect(() => {
+    const fetchQuickButton = async () => {
+      const quickButton = await AsyncStorage.getItem("quickButton");
+      console.log("as quickButton", quickButton);
+      setQuickButton(quickButton);
+    };
+    fetchQuickButton();
+    console.log("quickButton", quickButton);
+  }, []);
+
   return (
     <View className="flex flex-col w-full h-full bg-black p-4">
       <AppTitle title="Settings" />
@@ -38,10 +52,19 @@ export const SettingsView = ({ navigation }) => {
               { name: "tabs", value: "tabs" },
               { name: "favourites", value: "favourites" },
             ]}
-            defaultValue="tabs"
+            defaultValue={quickButton}
             title="Use address bar button for"
-            onChange={(option) => {
-              console.log(option);
+            onChange={async (option) => {
+              switch (option.value) {
+                case "tabs":
+                  await AsyncStorage.setItem("quickButton", "tabs");
+                  setQuickButton("tabs");
+                  break;
+                case "favourites":
+                  await AsyncStorage.setItem("quickButton", "favourites");
+                  setQuickButton("favourites");
+                  break;
+              }
             }}
             classOverride="mt-6"
           />

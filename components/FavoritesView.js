@@ -4,7 +4,6 @@ import { PageTitle } from "./core/Pagetitle"
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Link from "./core/Link";
-import WebView from "react-native-webview";
 
 export const FavoritesView = ({ navigation }) => {
     const [favorites, setFavorites] = useState([]);

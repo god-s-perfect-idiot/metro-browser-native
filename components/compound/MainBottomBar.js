@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import { Copy, Lock, RefreshCw } from "react-native-feather";
+import { Copy, Lock, RefreshCw, Star } from "react-native-feather";
 import Link from "../core/Link";
 import { MenuBar } from "../core/MenuBar";
 import RoundedButton from "../core/RoundedButton";
 import { TextBox } from "../core/TextBox";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 const Menu = ({
   url,
@@ -14,16 +16,38 @@ const Menu = ({
   loader,
   isLoading,
 }) => {
+  const [quickButton, setQuickButton] = useState("tabs");
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    console.log(loader);
-  }, [loader]);
+    const fetchQuickButton = async () => {
+      const quickButton = await AsyncStorage.getItem("quickButton");
+      setQuickButton(quickButton);
+    };
+    fetchQuickButton();
+  }, [isFocused, navigation]);
 
   return (
     <MenuBar
       controls={
         <>
           <View className="w-[15%] h-full flex justify-center items-center">
-            <RoundedButton Icon={<Copy width={20} stroke={"white"} />} />
+            <RoundedButton
+              Icon={
+                quickButton === "tabs" ? (
+                  <Copy width={20} stroke={"white"} />
+                ) : (
+                  <Star width={20} stroke={"white"} />
+                )
+              }
+              action={() => {
+                if (quickButton === "tabs") {
+                  navigation.navigate("Tabs");
+                } else {
+                  navigation.navigate("Favourites");
+                }
+              }}
+            />
           </View>
           <View className="w-[70%] h-full flex justify-center items-center ">
             <View className="w-full flex flex-col justify-start items-start bg-[#c9c9c9] my-1">
@@ -55,8 +79,12 @@ const Menu = ({
           <Link
             to={"https://google.com"}
             classOverride="text-lg"
-            text="favourites"
-            onPress={() => navigation.navigate("Favourites")}
+            text={quickButton === "tabs" ? "favourites" : "tabs"}
+            onPress={() =>
+              navigation.navigate(
+                quickButton === "tabs" ? "Favourites" : "Tabs"
+              )
+            }
           />
           <Link
             to={"https://google.com"}
