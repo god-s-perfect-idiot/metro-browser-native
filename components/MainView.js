@@ -11,10 +11,10 @@ export const MainView = ({ navigation, route }) => {
   );
   const [urlPreview, setUrlPreview] = useState("");
   const [agent, setAgent] = useState("");
+  const [searchEngine, setSearchEngine] = useState("google");
   const [loader, setLoader] = useState(0.0);
   const [isLoading, setIsLoading] = useState(false);
   const webViewRef = useRef(null);
-  // const [tab , setTab] = useState(0);
 
   const setTabUrl = async (url) => {
     const tabData = await AsyncStorage.getItem("tabs");
@@ -52,11 +52,10 @@ export const MainView = ({ navigation, route }) => {
   useEffect(() => {
     const fetchData = async () => {
       const tabData = await AsyncStorage.getItem("tabs");
-      // const tab = await AsyncStorage.getItem("tab");
+      const searchEngine = await AsyncStorage.getItem("searchEngine");
       const url = JSON.parse(tabData)[0].url;
       if (url) setUrl(url);
-      console.log("url", url);
-      // if (tab) setTab(tab);
+      if (searchEngine) setSearchEngine(searchEngine);
     };
     fetchData();
   }, [AsyncStorage.getItem("tabs")]);
@@ -66,7 +65,38 @@ export const MainView = ({ navigation, route }) => {
   };
 
   const onSubmitURL = () => {
-    setUrl(urlPreview);
+    // if search query, append to search engine
+    if (urlPreview.includes(" ")) {
+      switch (searchEngine) {
+        case "google":
+          setUrl("https://www.google.com/search?q=" + urlPreview);
+          console.log("https://www.google.com/search?q=" + urlPreview);
+          break;
+        case "bing":
+          setUrl("https://www.bing.com/search?q=" + urlPreview);
+          break;
+        case "duckduckgo":
+          setUrl("https://www.duckduckgo.com/search?t=" + urlPreview);
+          break;
+        case "yahoo":
+          setUrl("https://www.yahoo.com/search?p=" + urlPreview);
+          break;
+        default:
+          setUrl("https://www.google.com/search?q=" + urlPreview);
+          break;
+      }
+    } else {
+      // add https:// if not present and www. if not present
+      if (!urlPreview.includes("https://")) {
+        if (!urlPreview.includes("www.") && urlPreview.split(".").length <= 2) {
+          setUrl("https://www." + urlPreview);
+        } else {
+          setUrl("https://" + urlPreview);
+        }
+      } else {
+        setUrl(urlPreview);
+      }
+    }
   };
 
   return (
