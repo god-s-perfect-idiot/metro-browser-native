@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { Copy, Lock, RefreshCw, Star } from "react-native-feather";
+import { TouchableWithoutFeedback, View } from "react-native";
+import { Copy, Lock, RefreshCw, Star, X } from "react-native-feather";
 import Link from "../core/Link";
 import { MenuBar } from "../core/MenuBar";
 import RoundedButton from "../core/RoundedButton";
@@ -15,8 +15,10 @@ const Menu = ({
   navigation,
   loader,
   isLoading,
+  webViewRef,
 }) => {
   const [quickButton, setQuickButton] = useState("tabs");
+  const [isReloading, setIsReLoading] = useState(false);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -26,6 +28,13 @@ const Menu = ({
     };
     fetchQuickButton();
   }, [isFocused, navigation]);
+
+  useEffect(() => {
+    if (isReloading) {
+      webViewRef.current.reload();
+      setIsReLoading(false);
+    }
+  }, [isReloading]);
 
   return (
     <MenuBar
@@ -68,7 +77,23 @@ const Menu = ({
                   onSubmitText={onSubmitURL}
                   classOverrides="!h-10"
                 />
-                <RefreshCw stroke={"black"} width={16} strokeWidth={"3px"} />
+                <TouchableWithoutFeedback onPress={() => {
+                  setIsReLoading(!isReloading);
+                }}>
+                  {isReloading ? (
+                    <X
+                      stroke={"black"}
+                      width={16}
+                      strokeWidth={"3px"}
+                    />
+                  ) : (
+                    <RefreshCw
+                      stroke={"black"}
+                      width={16}
+                      strokeWidth={"3px"}
+                    />
+                  )}
+                </TouchableWithoutFeedback>
               </View>
             </View>
           </View>

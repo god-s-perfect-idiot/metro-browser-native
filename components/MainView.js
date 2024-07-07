@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View, Text, StatusBar } from "react-native";
 import WebView from "react-native-webview";
 import BottomBar from "./compound/MainBottomBar";
@@ -13,6 +13,7 @@ export const MainView = ({ navigation, route }) => {
   const [agent, setAgent] = useState("");
   const [loader, setLoader] = useState(0.0);
   const [isLoading, setIsLoading] = useState(false);
+  const webViewRef = useRef(null);
   // const [tab , setTab] = useState(0);
 
   const setTabUrl = async (url) => {
@@ -48,7 +49,6 @@ export const MainView = ({ navigation, route }) => {
   //   // fetchAgent();
   // }, []);
 
-
   useEffect(() => {
     const fetchData = async () => {
       const tabData = await AsyncStorage.getItem("tabs");
@@ -71,9 +71,10 @@ export const MainView = ({ navigation, route }) => {
 
   return (
     <View className="w-full h-full flex flex-col">
-      {/* <StatusBar /> */}
+      <StatusBar />
       {url !== "" ? (
         <WebView
+          ref={webViewRef}
           className="flex-1 w-full h-full"
           source={{ uri: url }}
           userAgent={agent}
@@ -95,6 +96,7 @@ export const MainView = ({ navigation, route }) => {
         navigation={navigation}
         loader={loader}
         isLoading={isLoading}
+        webViewRef={webViewRef}
       />
     </View>
   );
