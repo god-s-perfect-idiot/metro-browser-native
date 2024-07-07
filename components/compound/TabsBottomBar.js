@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
 import { Plus } from "react-native-feather";
 import RoundedButton from "../core/RoundedButton";
@@ -10,6 +10,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Menu = ({ navigation }) => {
   const [expanded, setExpanded] = useState(false);
+  const [searchEngine, setSearchEngine] = useState("google");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const searchEngine = await AsyncStorage.getItem("searchEngine");
+      if (searchEngine) setSearchEngine(searchEngine);
+    };
+    fetchData();
+  }, []);
+
   return (
     <View
       className={` ${
@@ -24,11 +34,29 @@ const Menu = ({ navigation }) => {
               Icon={<Plus width={20} stroke={"white"} strokeWidth={3} />}
               action={() => {
                 AsyncStorage.getItem("tabs").then((tabs) => {
+                  let url = "";
+                  switch (searchEngine) {
+                    case "google":
+                      url = "https://www.google.com";
+                      break;
+                    case "bing":
+                      url = "https://www.bing.com";
+                      break;
+                    case "duckduckgo":
+                      url = "https://www.duckduckgo.com";
+                      break;
+                    case "yahoo":
+                      url = "https://www.yahoo.com";
+                      break;
+                    default:
+                      url = "https://www.google.com";
+                      break;
+                  }
                   const newTabs = tabs
                     ? JSON.parse(tabs).concat({
-                        url: "https://www.google.com",
+                        url: url,
                       })
-                    : [{ url: "https://www.google.com" }];
+                    : [{ url: url }];
                   AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
                     });
               }}

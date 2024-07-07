@@ -39,6 +39,8 @@ export default function App() {
       };
       const quickButton = await AsyncStorage.getItem("quickButton");
       if (!quickButton) await AsyncStorage.setItem('quickButton', 'tabs');
+      const searchEngine = await AsyncStorage.getItem("searchEngine");
+      if (!searchEngine) await AsyncStorage.setItem('searchEngine', 'google');
       // const url = await AsyncStorage.getItem("url");
       // if (!url) await AsyncStorage.setItem('url', 'https://www.google.com')
     }
