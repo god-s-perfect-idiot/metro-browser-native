@@ -7,6 +7,7 @@ import RoundedButton from "../core/RoundedButton";
 import { TextBox } from "../core/TextBox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
+import * as Animatable from "react-native-animatable";
 
 const Menu = ({
   url,
@@ -20,6 +21,8 @@ const Menu = ({
   const [quickButton, setQuickButton] = useState("tabs");
   const [isReloading, setIsReLoading] = useState(false);
   const isFocused = useIsFocused();
+
+  const AnimatedView = Animatable.createAnimatableComponent(View);
 
   useEffect(() => {
     const fetchQuickButton = async () => {
@@ -77,15 +80,13 @@ const Menu = ({
                   onSubmitText={onSubmitURL}
                   classOverrides="!h-10"
                 />
-                <TouchableWithoutFeedback onPress={() => {
-                  setIsReLoading(!isReloading);
-                }}>
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    setIsReLoading(!isReloading);
+                  }}
+                >
                   {isReloading ? (
-                    <X
-                      stroke={"black"}
-                      width={16}
-                      strokeWidth={"3px"}
-                    />
+                    <X stroke={"black"} width={16} strokeWidth={"3px"} />
                   ) : (
                     <RefreshCw
                       stroke={"black"}
@@ -100,58 +101,73 @@ const Menu = ({
         </>
       }
       options={
-        <>
-          <Link
-            to={"https://google.com"}
-            classOverride="text-lg"
-            text={quickButton === "tabs" ? "favourites" : "tabs"}
-            onPress={() =>
-              navigation.navigate(
-                quickButton === "tabs" ? "Favourites" : "Tabs"
-              )
-            }
-          />
-          <Link
-            to={"https://google.com"}
-            classOverride="mt-4 text-lg"
-            text="add to favourites"
-            onPress={() => {
-              navigation.navigate("AddToFavourites", {
-                url: url,
-              });
-            }}
-          />
-          <Link
-            to={"https://google.com"}
-            classOverride="mt-4 text-lg"
-            text="find on page"
-            disabled
-          />
-          <Link
-            to={"https://google.com"}
-            classOverride="mt-4 text-lg"
-            text="share page"
-            disabled
-          />
-          <Link
-            to={"https://google.com"}
-            classOverride="mt-4 text-lg"
-            text="pin to start"
-            disabled
-          />
-          <Link
-            to={"https://google.com"}
-            classOverride="mt-4 text-lg"
-            text="recent"
-            disabled
-          />
-          <Link
-            to={"https://google.com"}
-            classOverride="mt-4 text-lg"
-            text="settings"
-            onPress={() => navigation.navigate("Settings")}
-          />
-        </>
+        <View className="flex flex-col align-left pl-4 py-4">
+          <AnimatedView animation="fadeInUp" duration={300} delay={0}>
+            <Link
+              to={"https://google.com"}
+              classOverride="text-lg"
+              text={quickButton === "tabs" ? "favourites" : "tabs"}
+              onPress={() =>
+                navigation.navigate(
+                  quickButton === "tabs" ? "Favourites" : "Tabs"
+                )
+              }
+            />
+          </AnimatedView>
+          <AnimatedView animation="fadeInUp" duration={300} delay={50}>
+            <Link
+              to={"https://google.com"}
+              classOverride="mt-4 text-lg"
+              text="add to favourites"
+              onPress={() => {
+                navigation.navigate("AddToFavourites", {
+                  url: url,
+                });
+              }}
+            />
+          </AnimatedView>
+
+          <AnimatedView animation="fadeInUp" duration={300} delay={100}>
+            <Link
+              to={"https://google.com"}
+              classOverride="mt-4 text-lg"
+              text="find on page"
+              disabled
+            />
+          </AnimatedView>
+          <AnimatedView animation="fadeInUp" duration={300} delay={150}>
+            <Link
+              to={"https://google.com"}
+              classOverride="mt-4 text-lg"
+              text="share page"
+              disabled
+            />
+          </AnimatedView>
+          <AnimatedView animation="fadeInUp" duration={300} delay={200}>
+            <Link
+              to={"https://google.com"}
+              classOverride="mt-4 text-lg"
+              text="pin to start"
+              disabled
+            />
+          </AnimatedView>
+          <AnimatedView animation="fadeInUp" duration={300} delay={250}>
+            <Link
+              to={"https://google.com"}
+              classOverride="mt-4 text-lg"
+              text="recent"
+              disabled
+            />
+          </AnimatedView>
+          <AnimatedView animation="fadeInUp" duration={300} delay={600}>
+            <Link
+              to={"https://google.com"}
+              classOverride="mt-4 text-lg"
+              text="settings"
+              onPress={() => navigation.navigate("Settings")}
+            />
+          </AnimatedView>
+        </View>
       }
     />
   );

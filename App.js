@@ -61,11 +61,27 @@ export default function App() {
           headerShown: false
         }
       }>
-        <Stack.Screen name="MainView" component={MainView} />
-        <Stack.Screen name="Favourites" component={FavoritesView} />
-        <Stack.Screen name="AddToFavourites" component={AddFavorite}/>
-        <Stack.Screen name="Settings" component={SettingsView} />
-        <Stack.Screen name="Tabs" component={TabsView} />
+        <Stack.Screen name="MainView" component={MainView} options={{
+          headerShown: false,
+          animation: 'slide_from_left'
+
+        }}/>
+        <Stack.Screen name="Favourites" component={FavoritesView} options={{
+          headerShown: false,
+          animation: 'slide_from_right'
+        }}/>
+        <Stack.Screen name="AddToFavourites" component={AddFavorite} options={{
+          headerShown: false,
+          animation: 'slide_from_right'
+        }}/>
+        <Stack.Screen name="Settings" component={SettingsView}  options={{
+          headerShown: false,
+          animation: 'slide_from_right'
+        }}/>
+        <Stack.Screen name="Tabs" component={TabsView}  options={{
+          headerShown: false,
+          animation: 'slide_from_right'
+        }}/>
       </Stack.Navigator>
       {/* <View className="flex-1 items-center justify-center bg-black w-full h-full">
         <StatusBar />
