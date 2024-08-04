@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, StatusBar } from "react-native";
 import WebView from "react-native-webview";
 import BottomBar from "./compound/MainBottomBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 export const MainView = ({ navigation, route }) => {
   // idk how but this works. god bless react native
@@ -49,17 +50,19 @@ export const MainView = ({ navigation, route }) => {
   //   // fetchAgent();
   // }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const tabData = await AsyncStorage.getItem("tabs");
-      // const tab = await AsyncStorage.getItem("tab");
-      const url = JSON.parse(tabData)[0].url;
-      if (url) setUrl(url);
-      console.log("url", url);
-      // if (tab) setTab(tab);
-    };
-    fetchData();
-  }, [AsyncStorage.getItem("tabs")]);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        const tabData = await AsyncStorage.getItem("tabs");
+        // const tab = await AsyncStorage.getItem("tab");
+        const url = JSON.parse(tabData)[0].url;
+        if (url) setUrl(url);
+        console.log("url fetch from tab and loading:", url);
+        // if (tab) setTab(tab);
+      };
+      fetchData();
+    }, [])
+  );
 
   const onURLChange = (e) => {
     if (typeof e === "string") setUrlPreview(e);
@@ -67,6 +70,18 @@ export const MainView = ({ navigation, route }) => {
 
   const onSubmitURL = () => {
     setUrl(urlPreview);
+  };
+  const normalizeUrl = (url) => url.replace(/\/+$/, "");
+
+  const updateUrl = (url) => {
+    AsyncStorage.getItem("tabs").then((tabData) => {
+      if (!tabData) return;
+      if (normalizeUrl(JSON.parse(tabData)[0].url) === normalizeUrl(url))
+        return;
+      setTabUrl(url);
+      setUrl(url);
+      console.log("url updated to:", url);
+    });
   };
 
   return (
@@ -80,10 +95,11 @@ export const MainView = ({ navigation, route }) => {
           userAgent={agent}
           onLoadProgress={(e) => {
             setLoader(e.nativeEvent.progress);
-            setUrl(e.nativeEvent.url);
-            setTabUrl(e.nativeEvent.url);
           }}
-          onLoadStart={() => setIsLoading(true)}
+          onLoadStart={(e) => {
+            setIsLoading(true);
+            updateUrl(e.nativeEvent.url);
+          }}
           onLoadEnd={() => setIsLoading(false)}
         />
       ) : (

@@ -26,6 +26,8 @@ export default function App() {
         Selawk: require("./assets/fonts/selawk.ttf"),
         SelawkLight: require("./assets/fonts/selawkl.ttf"),
         SelawkSemiBold: require("./assets/fonts/selawksb.ttf"),
+        SegoeWP: require("./assets/fonts/segoe.ttf"),
+        SegoeWPLight: require("./assets/fonts/segoel.ttf"),
       });
       setFontLoaded(true);
     }
