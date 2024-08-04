@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { StatusBar, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
 import * as Font from 'expo-font';
 import { MainView } from './components/MainView';
 import { FavoritesView } from './components/FavoritesView';
@@ -9,15 +9,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AddFavorite } from './components/AddFavoriteView';
 import { SettingsView } from './components/SettingsView';
 import { TabsView } from './components/TabsView';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
-
     async function loadFont() {
       await Font.loadAsync({
         NotoSans_Light: require("./assets/fonts/NotoSans_Light.ttf"),
@@ -31,64 +30,40 @@ export default function App() {
       });
       setFontLoaded(true);
     }
+
     async function probeURL() {
-      // const tab = await AsyncStorage.getItem("tab");
-      // if (!tab) await AsyncStorage.setItem('tab', '0');
       const tabData = await AsyncStorage.getItem("tabs");
       if (!tabData) {
-        await AsyncStorage.setItem('tabs', JSON.stringify([{url: "https://www.google.com"}]))
-        // await AsyncStorage.setItem('tab', '0');
-      };
+        await AsyncStorage.setItem('tabs', JSON.stringify([{url: "https://www.google.com"}]));
+      }
       const quickButton = await AsyncStorage.getItem("quickButton");
       if (!quickButton) await AsyncStorage.setItem('quickButton', 'tabs');
       const searchEngine = await AsyncStorage.getItem("searchEngine");
       if (!searchEngine) await AsyncStorage.setItem('searchEngine', 'google');
-      // const url = await AsyncStorage.getItem("url");
-      // if (!url) await AsyncStorage.setItem('url', 'https://www.google.com')
     }
 
     probeURL();
     loadFont();
-  }, [])
-
+  }, []);
 
   if (!fontLoaded) {
     return null;
-  }    
+  }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={
-        {
-          headerShown: false
-        }
-      }>
-        <Stack.Screen name="MainView" component={MainView} options={{
-          headerShown: false,
-          animation: 'slide_from_left'
-
-        }}/>
-        <Stack.Screen name="Favourites" component={FavoritesView} options={{
-          headerShown: false,
-          animation: 'slide_from_right'
-        }}/>
-        <Stack.Screen name="AddToFavourites" component={AddFavorite} options={{
-          headerShown: false,
-          animation: 'slide_from_right'
-        }}/>
-        <Stack.Screen name="Settings" component={SettingsView}  options={{
-          headerShown: false,
-          animation: 'slide_from_right'
-        }}/>
-        <Stack.Screen name="Tabs" component={TabsView}  options={{
-          headerShown: false,
-          animation: 'slide_from_right'
-        }}/>
-      </Stack.Navigator>
-      {/* <View className="flex-1 items-center justify-center bg-black w-full h-full">
-        <StatusBar />
-        <MainView />
-      </View> */}
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <SafeAreaView style={{ flex: 1 }}>
+          <StatusBar backgroundColor="black" barStyle="light-content" />
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="MainView" component={MainView} options={{ animation: 'slide_from_left' }} />
+            <Stack.Screen name="Favourites" component={FavoritesView} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="AddToFavourites" component={AddFavorite} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="Settings" component={SettingsView} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="Tabs" component={TabsView} options={{ animation: 'slide_from_right' }} />
+          </Stack.Navigator>
+        </SafeAreaView>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
