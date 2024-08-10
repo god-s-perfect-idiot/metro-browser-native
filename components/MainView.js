@@ -5,6 +5,7 @@ import BottomBar from "./compound/MainBottomBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import AppWebView from "./utils/webview-manager";
+import { addToHistory } from "./utils/history-manager";
 
 export const MainView = ({ navigation, route }) => {
   // idk how but this works. god bless react native
@@ -109,6 +110,7 @@ export const MainView = ({ navigation, route }) => {
           preLoad={(e) => {
             setIsLoading(true)
             updateUrl(e.nativeEvent.url)
+            addToHistory(e.nativeEvent.url)
           }}
           postLoad={() => setIsLoading(false)}
           onLoad={(e) => setLoader(e.nativeEvent.progress)}

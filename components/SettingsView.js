@@ -8,6 +8,7 @@ import { Button } from "./core/Button";
 import Link from "./core/Link";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import { clearHistory } from "./utils/history-manager";
 
 export const SettingsView = ({ navigation }) => {
 
@@ -108,7 +109,7 @@ export const SettingsView = ({ navigation }) => {
           <Button
             text="delete history"
             onPress={() => {
-              console.log("clearing history");
+              clearHistory();
             }}
             classOverride="w-[40%]"
           />

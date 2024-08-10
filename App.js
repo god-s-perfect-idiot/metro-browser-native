@@ -10,6 +10,7 @@ import { AddFavorite } from './components/AddFavoriteView';
 import { SettingsView } from './components/SettingsView';
 import { TabsView } from './components/TabsView';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { RecentView } from './components/RecentView';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ export default function App() {
             <Stack.Screen name="Favourites" component={FavoritesView} options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="AddToFavourites" component={AddFavorite} options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="Settings" component={SettingsView} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="Recent" component={RecentView} options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="Tabs" component={TabsView} options={{ animation: 'slide_from_right' }} />
           </Stack.Navigator>
         </SafeAreaView>

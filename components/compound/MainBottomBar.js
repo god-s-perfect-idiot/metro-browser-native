@@ -156,7 +156,7 @@ const Menu = ({
               to={"https://google.com"}
               classOverride="mt-4 text-lg"
               text="recent"
-              disabled
+              onPress={() => navigation.navigate("Recent")}
             />
           </AnimatedView>
           <AnimatedView animation="fadeInUp" duration={300} delay={600}>
