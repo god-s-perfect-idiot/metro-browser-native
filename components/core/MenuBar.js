@@ -77,12 +77,13 @@ export const MenuBar = ({ options, controls, height = 14 }) => {
   // }
 };
 
-export const QuickMenu = ({ options }) => {
+export const QuickMenu = ({ options, disabled = false }) => {
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
+    console.log(options)
   };
 
   return (
@@ -108,10 +109,10 @@ export const QuickMenu = ({ options }) => {
               className="flex flex-col justify-center items-center mx-4 my-2 mb-3 px-1"
               key={index}
             >
-              <RoundedButton Icon={option.Icon} action={option.onPress} />
+              <RoundedButton Icon={option.Icon} action={option.onPress} disabled={disabled}/>
               {expanded && (
                 <View className="flex flex-1 flex-row justify-center mt-1">
-                  <Text className="text-white text-[10px]" style={fonts.light}>
+                  <Text className={`${disabled ? "text-[#8a8a8a]" : "text-white"} text-[10px]`} style={fonts.light}>
                     {option.text}
                   </Text>
                 </View>
