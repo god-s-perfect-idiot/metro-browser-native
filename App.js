@@ -11,6 +11,7 @@ import { SettingsView } from './components/SettingsView';
 import { TabsView } from './components/TabsView';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { RecentView } from './components/RecentView';
+import { clearNavigation } from './components/utils/app-helper';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,7 @@ export default function App() {
 
     probeURL();
     loadFont();
+    clearNavigation();
   }, []);
 
   if (!fontLoaded) {

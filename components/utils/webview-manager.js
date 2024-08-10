@@ -88,9 +88,14 @@ const AppWebView = ({
   // );
 
   // const [source, setSource] = useState(null);
-  const onCapture = useCallback(uri => handleCapture(uri), []);
+  const onCapture = useCallback((uri) => handleCapture(uri), []);
   return (
-    <SafeAreaView className="flex-1 h-full w-full">
+    <View
+      style={{
+        height: "97%",
+        display: "flex",
+      }}
+    >
       {/* <ViewShot onCapture={onCapture} captureMode="mount" style={{
         // flex: 1,
         width: "100%",
@@ -98,27 +103,27 @@ const AppWebView = ({
         height: "97%",
         display: "flex",
       }}> */}
-        {/* <WebView
+      {/* <WebView
           source={{
             uri: 'https://github.com/gre/react-native-view-shot',
           }}
         /> */}
-        <WebView
-            className={classOverrides}
-            ref={webViewRef}
-            source={{ uri: url }}
-            onLoadStart={handleLoadStart}
-            onLoadEnd={handleLoadEnd}
-            onLoadProgress={(e) => onLoad(e)}
-            // onMessage={handleMessage}
-            // injectedJavaScript={html2canvasScript}
-          />
+      <WebView
+        className={classOverrides}
+        ref={webViewRef}
+        source={{ uri: url }}
+        onLoadStart={handleLoadStart}
+        onLoadEnd={handleLoadEnd}
+        onLoadProgress={(e) => onLoad(e)}
+        // onMessage={handleMessage}
+        // injectedJavaScript={html2canvasScript}
+      />
       {/* </ViewShot> */}
 
       {/* <Desc desc="above is a webview and below is a continuous screenshot of it" /> */}
 
       {/* <Image fadeDuration={0} source={source} /> */}
-    </SafeAreaView>
+    </View>
   );
 };
 

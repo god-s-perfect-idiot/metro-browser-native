@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef  } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Platform,
   UIManager,
   ScrollView,
+  Animated 
 } from "react-native";
 import RoundedButton from "./RoundedButton";
 import * as Animatable from "react-native-animatable";
@@ -79,20 +80,22 @@ export const MenuBar = ({ options, controls, height = 14 }) => {
 
 export const QuickMenu = ({ options, disabled = false }) => {
   const [expanded, setExpanded] = useState(false);
+  const heightAnim = useRef(new Animated.Value(60)).current;
 
   const toggleExpand = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
-    console.log(options)
+    Animated.timing(heightAnim, {
+      toValue: expanded ? 60 : 80,
+      duration: 150,
+      useNativeDriver: false,
+    }).start();
+    console.log(options);
   };
 
   return (
-    <Animatable.View
-      transition={["height"]}
-      duration={500}
+    <Animated.View
       style={{
-        // if this looks ugly, its probable because of the hardcoded values
-        height: expanded ? 80 : 60,
+        height: heightAnim,
         marginBottom: 0,
         flexDirection: "row",
         backgroundColor: "#222",
@@ -101,33 +104,56 @@ export const QuickMenu = ({ options, disabled = false }) => {
         width: "100%",
       }}
     >
-      <View className="w-[15%] flex" />
-      <View className="w-[70%] justify-center flex-row">
+      <View style={{ width: '15%' }} />
+      <View style={{ width: '70%', justifyContent: 'center', flexDirection: 'row' }}>
         {options.map((option, index) => {
           return (
             <View
-              className="flex flex-col justify-center items-center mx-4 my-2 mb-3 px-1"
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginHorizontal: 16,
+                marginVertical: 8,
+                marginBottom: 12,
+                paddingHorizontal: 4,
+              }}
               key={index}
             >
               <RoundedButton Icon={option.Icon} action={option.onPress} disabled={disabled}/>
               {expanded && (
-                <View className="flex flex-1 flex-row justify-center mt-1">
-                  <Text className={`${disabled ? "text-[#8a8a8a]" : "text-white"} text-[10px]`} style={fonts.light}>
+                <Animatable.View 
+                  animation="fadeIn" 
+                  duration={300} 
+                  style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 4 }}
+                >
+                  <Text style={[
+                    { color: disabled ? '#8a8a8a' : 'white', fontSize: 10 },
+                    fonts.light
+                  ]}>
                     {option.text}
                   </Text>
-                </View>
+                </Animatable.View>
               )}
             </View>
           );
         })}
       </View>
       <TouchableWithoutFeedback onPress={toggleExpand}>
-        <View className="w-[15%] h-full items-start justify-center flex flex-row gap-1 pt-2">
-          <View className="w-1 h-1 bg-white rounded-full" />
-          <View className="w-1 h-1 bg-white rounded-full" />
-          <View className="w-1 h-1 bg-white rounded-full" />
+        <View style={{ 
+          width: '15%', 
+          height: '100%', 
+          alignItems: 'flex-start', 
+          justifyContent: 'center', 
+          flexDirection: 'row', 
+          gap: 4, 
+          paddingTop: 8 
+        }}>
+          <View style={{ width: 4, height: 4, backgroundColor: 'white', borderRadius: 2 }} />
+          <View style={{ width: 4, height: 4, backgroundColor: 'white', borderRadius: 2 }} />
+          <View style={{ width: 4, height: 4, backgroundColor: 'white', borderRadius: 2 }} />
         </View>
       </TouchableWithoutFeedback>
-    </Animatable.View>
+    </Animated.View>
   );
 };

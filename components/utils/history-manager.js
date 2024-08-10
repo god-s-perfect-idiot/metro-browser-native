@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { addToNavigation } from "./app-helper";
 
 export async function getHistory() {
     const history = await AsyncStorage.getItem("history");
@@ -12,7 +13,7 @@ export async function addToHistory(url) {
     }
     history.push(url);
     await AsyncStorage.setItem("history", JSON.stringify(history));
-    console.log("added to history", url, history);
+    await addToNavigation(url);
 }
 
 export async function clearHistory() {

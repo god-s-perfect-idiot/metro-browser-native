@@ -105,7 +105,7 @@ const Menu = ({
           <AnimatedView animation="fadeInUp" duration={300} delay={0}>
             <Link
               to={"https://google.com"}
-              classOverride="text-lg"
+              classOverride="text-xl"
               text={quickButton === "tabs" ? "favourites" : "tabs"}
               onPress={() =>
                 navigation.navigate(
@@ -117,7 +117,7 @@ const Menu = ({
           <AnimatedView animation="fadeInUp" duration={300} delay={50}>
             <Link
               to={"https://google.com"}
-              classOverride="mt-4 text-lg"
+              classOverride="mt-4 text-xl"
               text="add to favourites"
               onPress={() => {
                 navigation.navigate("AddToFavourites", {
@@ -130,7 +130,7 @@ const Menu = ({
           <AnimatedView animation="fadeInUp" duration={300} delay={100}>
             <Link
               to={"https://google.com"}
-              classOverride="mt-4 text-lg"
+              classOverride="mt-4 text-xl"
               text="find on page"
               disabled
             />
@@ -138,7 +138,7 @@ const Menu = ({
           <AnimatedView animation="fadeInUp" duration={300} delay={150}>
             <Link
               to={"https://google.com"}
-              classOverride="mt-4 text-lg"
+              classOverride="mt-4 text-xl"
               text="share page"
               disabled
             />
@@ -146,7 +146,7 @@ const Menu = ({
           <AnimatedView animation="fadeInUp" duration={300} delay={200}>
             <Link
               to={"https://google.com"}
-              classOverride="mt-4 text-lg"
+              classOverride="mt-4 text-xl"
               text="pin to start"
               disabled
             />
@@ -154,7 +154,7 @@ const Menu = ({
           <AnimatedView animation="fadeInUp" duration={300} delay={250}>
             <Link
               to={"https://google.com"}
-              classOverride="mt-4 text-lg"
+              classOverride="mt-4 text-xl"
               text="recent"
               onPress={() => navigation.navigate("Recent")}
             />
@@ -162,7 +162,7 @@ const Menu = ({
           <AnimatedView animation="fadeInUp" duration={300} delay={600}>
             <Link
               to={"https://google.com"}
-              classOverride="mt-4 text-lg"
+              classOverride="mt-4 text-xl"
               text="settings"
               onPress={() => navigation.navigate("Settings")}
             />

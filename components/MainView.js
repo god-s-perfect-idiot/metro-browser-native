@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, StatusBar } from "react-native";
+import { View, Text, StatusBar, BackHandler } from "react-native";
 import WebView from "react-native-webview";
 import BottomBar from "./compound/MainBottomBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import AppWebView from "./utils/webview-manager";
 import { addToHistory } from "./utils/history-manager";
+import { attachBackHandler, detachBackHandler, popNavigation } from "./utils/app-helper";
 
 export const MainView = ({ navigation, route }) => {
   // idk how but this works. god bless react native
@@ -51,6 +52,37 @@ export const MainView = ({ navigation, route }) => {
   //   // enable this to fetch agent from settings
   //   // fetchAgent();
   // }, []);
+
+  useEffect(() => {
+    
+    // attachBackHandler(navigation);
+    const backAction = () => {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+        return true; // Prevent default behavior
+      } else {
+        // Call your custom function here
+        popNavigation().then((url) => {
+          console.log("intercepted back url", url);
+          if (url) {
+            setUrl(url);
+            return true;
+          } else {
+            BackHandler.exitApp();
+            return false;
+          }
+        });
+        return true; // Prevent default behavior
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove(); // Clean up the event listener
+  }, [navigation]);
 
   useFocusEffect(
     useCallback(() => {
