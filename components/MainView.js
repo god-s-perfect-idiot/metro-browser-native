@@ -4,6 +4,7 @@ import WebView from "react-native-webview";
 import BottomBar from "./compound/MainBottomBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import AppWebView from "./utils/webview-manager";
 
 export const MainView = ({ navigation, route }) => {
   // idk how but this works. god bless react native
@@ -88,19 +89,30 @@ export const MainView = ({ navigation, route }) => {
     <View className="w-full h-full flex flex-col">
       <StatusBar />
       {url !== "" ? (
-        <WebView
-          ref={webViewRef}
-          className="flex-1 w-full h-full"
-          source={{ uri: url }}
-          userAgent={agent}
-          onLoadProgress={(e) => {
-            setLoader(e.nativeEvent.progress);
+        // <WebView
+        //   ref={webViewRef}
+        //   className="flex-1 w-full h-full"
+        //   source={{ uri: url }}
+        //   userAgent={agent}
+        //   onLoadProgress={(e) => {
+        //     setLoader(e.nativeEvent.progress);
+        //   }}
+        //   onLoadStart={(e) => {
+        //     setIsLoading(true);
+        //     updateUrl(e.nativeEvent.url);
+        //   }}
+        //   onLoadEnd={() => setIsLoading(false)}
+        // />
+        <AppWebView
+          url={url}
+          webViewRef={webViewRef}
+          preLoad={(e) => {
+            setIsLoading(true)
+            updateUrl(e.nativeEvent.url)
           }}
-          onLoadStart={(e) => {
-            setIsLoading(true);
-            updateUrl(e.nativeEvent.url);
-          }}
-          onLoadEnd={() => setIsLoading(false)}
+          postLoad={() => setIsLoading(false)}
+          onLoad={(e) => setLoader(e.nativeEvent.progress)}
+          classOverrides={"flex-1 w-full h-full"}
         />
       ) : (
         <View className="bg-white flex-1 h-full w-full"></View>
