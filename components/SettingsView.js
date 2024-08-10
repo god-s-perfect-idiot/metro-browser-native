@@ -105,13 +105,13 @@ export const SettingsView = ({ navigation }) => {
             We'll download full web pages.
           </Text>
         </View>
-        <View className="flex flex-col mt-12">
+        <View className="flex flex-col mt-12 justify-start items-start">
           <Button
             text="delete history"
             onPress={() => {
               clearHistory();
             }}
-            classOverride="w-[40%]"
+            classOverride="px-auto"
           />
           <Text className="text-[#b0b0b0] text-[13px] mt-8" style={fonts.light}>
             Deletes all your browsing history, cookies and temporary Internet
