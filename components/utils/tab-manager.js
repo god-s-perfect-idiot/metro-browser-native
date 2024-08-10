@@ -26,7 +26,7 @@ export const Tab = ({ url }) => {
 
     return (
         <View className="flex flex-col mr-8 mb-8">
-            <View className="w-36 h-32 bg-white">
+            <View className="w-28 h-24 bg-white">
                 {/* {snapshotUri ? ( */}
                     <Image 
                         source={{
@@ -34,7 +34,7 @@ export const Tab = ({ url }) => {
                         }} 
                         // style={{ width: '100%', height: '100%' }}
                         // resizeMode="cover"
-                        className="w-36 h-32"
+                        className="w-28 h-24"
                         resizeMode='cover'
                     />
                 {/* ) : (

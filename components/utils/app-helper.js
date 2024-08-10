@@ -12,7 +12,6 @@ export async function addToNavigation(url) {
     }
     navigatedURLs.push(url);
     await AsyncStorage.setItem("navigation", JSON.stringify(navigatedURLs));
-    console.log("added to navigation", url, navigatedURLs);
 }
 
 export async function popNavigation() {
@@ -29,3 +28,25 @@ export async function clearNavigation() {
     const url = tabs[0].url;
     await addToNavigation(url);
 }
+
+export const normalizeUrl = (url) => url.replace(/\/+$/, "");
+
+export const isURL = (url) => {
+    const urlRegex = new RegExp(
+        "^(https?|ftp|file):\\/\\/" +
+            "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))" +
+            "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+            "(\\?[;&a-z\\d%_.~+=-]*)?" +
+            "(\\#[-a-z\\d_]*)?$",
+        "i"
+    );
+    return urlRegex.test(url);
+};
+
+export const isIncompleteURL = (url) => {
+    const incompleteURLRegex = new RegExp(
+        "^((https?|ftp|file):\\/\\/)?(www\\.)?[a-zA-Z0-9-]+\\.[a-z]{2,}.*$",
+        "i"
+    );
+    return incompleteURLRegex.test(url);
+};

@@ -33,7 +33,7 @@ export const TabsView = ({ navigation }) => {
           <Text className="text-base text-[#b0b0b0]" style={fonts.light}>
             recent
           </Text>
-          <View className="flex flex-row flex-wrap mt-6">
+          <View className="flex flex-row flex-wrap mt-6 bg-[#cab]">
             {tabs.map((tab, index) => (
               <TouchableWithoutFeedback
                 onPress={() => {
@@ -48,7 +48,7 @@ export const TabsView = ({ navigation }) => {
                 key={index}
               >
                 <View className="flex flex-col mr-8 mb-8">
-                  <View className="w-36 h-32 bg-white">
+                  <View className="w-28 h-24 bg-white">
                     {/* <WebView
                       source={{ uri: tab.url }}
                       className="w-32 h-28"
@@ -86,9 +86,9 @@ export const TabsView = ({ navigation }) => {
                     </TouchableWithoutFeedback>
                   </View>
                   <Text
-                    className="text-white mt-2 text-xs text-clip w-32"
-                    numberOfLines={1}
+                    className="text-white mt-1 text-xs w-28 text-clip"
                     ellipsizeMode="tail"
+                    numberOfLines={1}
                     style={fonts.regular}
                   >
                     {tab.url}

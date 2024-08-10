@@ -6,7 +6,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import AppWebView from "./utils/webview-manager";
 import { addToHistory } from "./utils/history-manager";
-import { attachBackHandler, detachBackHandler, popNavigation } from "./utils/app-helper";
+import {
+  attachBackHandler,
+  detachBackHandler,
+  isIncompleteURL,
+  isURL,
+  normalizeUrl,
+  popNavigation,
+} from "./utils/app-helper";
 
 export const MainView = ({ navigation, route }) => {
   // idk how but this works. god bless react native
@@ -15,10 +22,10 @@ export const MainView = ({ navigation, route }) => {
   );
   const [urlPreview, setUrlPreview] = useState("");
   const [agent, setAgent] = useState("");
+  const [searchEngine, setSearchEngine] = useState("google");
   const [loader, setLoader] = useState(0.0);
   const [isLoading, setIsLoading] = useState(false);
   const webViewRef = useRef(null);
-  // const [tab , setTab] = useState(0);
 
   const setTabUrl = async (url) => {
     const tabData = await AsyncStorage.getItem("tabs");
@@ -54,7 +61,6 @@ export const MainView = ({ navigation, route }) => {
   // }, []);
 
   useEffect(() => {
-    
     // attachBackHandler(navigation);
     const backAction = () => {
       if (navigation.canGoBack()) {
@@ -77,7 +83,7 @@ export const MainView = ({ navigation, route }) => {
     };
 
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
+      "hardwareBackPress",
       backAction
     );
 
@@ -91,7 +97,8 @@ export const MainView = ({ navigation, route }) => {
         // const tab = await AsyncStorage.getItem("tab");
         const url = JSON.parse(tabData)[0].url;
         if (url) setUrl(url);
-        console.log("url fetch from tab and loading:", url);
+        const searchEngine = await AsyncStorage.getItem("searchEngine");
+        if (searchEngine) setSearchEngine(searchEngine);
         // if (tab) setTab(tab);
       };
       fetchData();
@@ -103,9 +110,45 @@ export const MainView = ({ navigation, route }) => {
   };
 
   const onSubmitURL = () => {
-    setUrl(urlPreview);
+    // if search query, append to search engine
+    if (!isURL(urlPreview)) {
+      if (isIncompleteURL(urlPreview)) {
+        if (!urlPreview.includes("https://")) {
+          if (
+            !urlPreview.includes("www.") &&
+            urlPreview.split(".").length <= 2
+          ) {
+            setUrl("https://www." + urlPreview);
+          } else {
+            setUrl("https://" + urlPreview);
+          }
+        }
+      } else {
+        console.log(searchEngine)
+        switch (searchEngine) {
+          case "google":
+            setUrl("https://www.google.com/search?q=" + urlPreview);
+            console.log("https://www.google.com/search?q=" + urlPreview);
+            break;
+          case "bing":
+            setUrl("https://www.bing.com/search?q=" + urlPreview);
+            break;
+          case "duckduckgo":
+            setUrl("https://www.duckduckgo.com/?q=" + urlPreview);
+            break;
+          case "yahoo":
+            setUrl("https://search.yahoo.com/search?p=" + urlPreview);
+            break;
+          default:
+            setUrl("https://www.google.com/search?q=" + urlPreview);
+            break;
+        }
+      }
+    } else {
+      // add https:// if not present and www. if not present
+      setUrl(urlPreview);
+    }
   };
-  const normalizeUrl = (url) => url.replace(/\/+$/, "");
 
   const updateUrl = (url) => {
     AsyncStorage.getItem("tabs").then((tabData) => {
@@ -140,9 +183,9 @@ export const MainView = ({ navigation, route }) => {
           url={url}
           webViewRef={webViewRef}
           preLoad={(e) => {
-            setIsLoading(true)
-            updateUrl(e.nativeEvent.url)
-            addToHistory(e.nativeEvent.url)
+            setIsLoading(true);
+            updateUrl(e.nativeEvent.url);
+            addToHistory(e.nativeEvent.url);
           }}
           postLoad={() => setIsLoading(false)}
           onLoad={(e) => setLoader(e.nativeEvent.progress)}

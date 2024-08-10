@@ -4,10 +4,10 @@ import WebView from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ViewShot from "react-native-view-shot";
+import { normalizeUrl } from "./app-helper";
 
 // const dimension = { width: 300, height: 300 };
 
-const normalizeUrl = (url) => url.replace(/\/+$/, "");
 
 const AppWebView = ({
   preLoad,
