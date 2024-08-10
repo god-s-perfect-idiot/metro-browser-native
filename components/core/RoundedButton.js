@@ -1,7 +1,7 @@
 import { View, Text, TouchableWithoutFeedback } from "react-native";
 import { Copy } from "react-native-feather";
 
-const RoundedButton = ({ classOverrides = "", Icon, action, disabled }) => {
+const RoundedButton = ({ classOverrides = "", Icon, action, disabled=false }) => {
   return (
     <TouchableWithoutFeedback
       onPress={() => {
