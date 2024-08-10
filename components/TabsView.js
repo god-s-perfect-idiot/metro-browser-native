@@ -1,4 +1,4 @@
-import { ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Image, ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
 import { AppTitle } from "./core/AppTitle";
 import { PageTitle } from "./core/Pagetitle";
 import Menu from "./compound/TabsBottomBar";
@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fonts } from "../styles/fonts";
 import WebView from "react-native-webview";
 import { X } from "react-native-feather";
+import ScaledWebView from "./utils/webview-manager";
+import { Tab } from "./utils/tab-manager";
 
 export const TabsView = ({ navigation }) => {
   const [tabs, setTabs] = useState([]);
@@ -46,8 +48,8 @@ export const TabsView = ({ navigation }) => {
                 key={index}
               >
                 <View className="flex flex-col mr-8 mb-8">
-                  <View className="w-32 h-28 bg-white">
-                    <WebView
+                  <View className="w-36 h-32 bg-white">
+                    {/* <WebView
                       source={{ uri: tab.url }}
                       className="w-32 h-28"
                       injectedJavaScript={`
@@ -64,8 +66,11 @@ export const TabsView = ({ navigation }) => {
         document.getElementsByTagName('head')[0].appendChild(meta);
       }
     `}
-                      scalesPageToFit={false}
-                    />
+                      scalesPageToFit={true}
+                    /> */}
+                    {/* <Image source={{ uri: tab.url }} /> */}
+                    {/* <ScaledWebView url={tab.url} /> */}
+                    <Tab url={tab.url} />
                     <TouchableWithoutFeedback
                       onPress={() => {
                         setTabs(tabs.filter((t, i) => i !== index));
