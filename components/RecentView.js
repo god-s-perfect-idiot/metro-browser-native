@@ -12,7 +12,13 @@ export const RecentView = ({ navigation }) => {
   const [recent, setRecent] = useState([]);
 
   async function setURL(url) {
-    await AsyncStorage.setItem("url", url);
+    // await AsyncStorage.setItem("url", url);
+    const tabs = await AsyncStorage.getItem("tabs");
+    if (tabs) {
+      const tempTabs = JSON.parse(tabs);
+      tempTabs.unshift({ name: url, url: url });
+      await AsyncStorage.setItem("tabs", JSON.stringify(tempTabs));
+    }
   }
 
   useEffect(() => {

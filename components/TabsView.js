@@ -33,7 +33,7 @@ export const TabsView = ({ navigation }) => {
           <Text className="text-base text-[#b0b0b0]" style={fonts.light}>
             recent
           </Text>
-          <View className="flex flex-row flex-wrap mt-6 bg-[#cab]">
+          <View className="flex flex-row flex-wrap mt-6">
             {tabs.map((tab, index) => (
               <TouchableWithoutFeedback
                 onPress={() => {
