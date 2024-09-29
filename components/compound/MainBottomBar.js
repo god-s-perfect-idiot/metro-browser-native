@@ -41,6 +41,7 @@ const Menu = ({
 
   return (
     <MenuBar
+      navigation={navigation}
       controls={
         <>
           <View className="w-[15%] h-full flex justify-center items-center">

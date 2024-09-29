@@ -66,35 +66,35 @@ export const MainView = ({ navigation, route }) => {
   //   });
   // }, [AsyncStorage.getItem("url")]);
 
-  useEffect(() => {
-    // attachBackHandler(navigation);
-    const backAction = () => {
-      if (navigation.canGoBack()) {
-        navigation.goBack();
-        return true; // Prevent default behavior
-      } else {
-        // Call your custom function here
-        popNavigation().then((url) => {
-          console.log("intercepted back url", url);
-          if (url) {
-            setUrl(url);
-            return true;
-          } else {
-            BackHandler.exitApp();
-            return false;
-          }
-        });
-        return true; // Prevent default behavior
-      }
-    };
+  // useEffect(() => {
+  //   // attachBackHandler(navigation);
+  //   const backAction = () => {
+  //     if (navigation.canGoBack()) {
+  //       navigation.goBack();
+  //       return true; // Prevent default behavior
+  //     } else {
+  //       // Call your custom function here
+  //       popNavigation().then((url) => {
+  //         console.log("intercepted back url", url);
+  //         if (url) {
+  //           setUrl(url);
+  //           return true;
+  //         } else {
+  //           BackHandler.exitApp();
+  //           return false;
+  //         }
+  //       });
+  //       return true; // Prevent default behavior
+  //     }
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
 
-    return () => backHandler.remove(); // Clean up the event listener
-  }, [navigation]);
+  //   return () => backHandler.remove(); // Clean up the event listener
+  // }, [navigation]);
 
   useFocusEffect(
     useCallback(() => {
