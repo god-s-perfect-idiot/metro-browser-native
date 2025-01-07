@@ -17,6 +17,7 @@ const Menu = ({
   loader,
   isLoading,
   webViewRef,
+  navBarRef
 }) => {
   const [quickButton, setQuickButton] = useState("tabs");
   const [isReloading, setIsReLoading] = useState(false);
@@ -169,6 +170,7 @@ const Menu = ({
           </AnimatedView>
         </View>
       }
+      navBarRef={navBarRef}
     />
   );
 };
