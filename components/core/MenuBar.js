@@ -1,4 +1,4 @@
-import { useState, useRef  } from "react";
+import { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   Platform,
   UIManager,
   ScrollView,
-  Animated 
+  Animated,
 } from "react-native";
 import RoundedButton from "./RoundedButton";
 import * as Animatable from "react-native-animatable";
@@ -38,44 +38,48 @@ const ShortMenu = ({ children, handleExpand }) => {
 
 export const MenuBar = ({ options, controls, height = 14 }) => {
   const [expanded, setExpanded] = useState(false);
-  return <Animatable.View
-    transition={["height"]}
-    duration={250}
-    style={{
-      // if this looks ugly, its probable because of the hardcoded values
-      height: expanded ? 350 : 60,
-      marginBottom: 0,
-      flexDirection: "row",
-      backgroundColor: "#222",
-      position: "absolute",
-      bottom: 0,
-      width: "100%",
-    }}
-  >
-    {expanded ? (
-      <View className={`bg-[#222222] w-full flex flex-col`}>
-        <ShortMenu handleExpand={() => setExpanded(false)}>
+  const contentHeight = useRef(new Animated.Value(60)).current;
+  
+  const toggleExpand = () => {
+    // Start height animation
+    Animated.timing(contentHeight, {
+      toValue: expanded ? 60 : 350,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+    
+    // Update state after animation starts
+    setExpanded(!expanded);
+  };
+
+  return (
+    <Animated.View 
+      style={{
+        height: contentHeight,
+        marginBottom: 0,
+        flexDirection: 'row',
+        backgroundColor: '#222',
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        overflow: 'hidden', // Important to prevent content from showing during animation
+      }}
+    >
+      <View className="w-full">
+        <ShortMenu handleExpand={toggleExpand}>
           {controls}
         </ShortMenu>
-        <ScrollView className="w-full h-full">
-          <View className="flex flex-col gap-16 w-full">
-            {/* sadly there is no gap in react-native yet */}
-            {options}
-          </View>
-        </ScrollView>
+        
+        {expanded && (
+          <ScrollView className="w-full">
+            <View className="w-full">
+              {options}
+            </View>
+          </ScrollView>
+        )}
       </View>
-    ) : (
-      <ShortMenu handleExpand={() => setExpanded(true)}>{controls}</ShortMenu>
-    )}
-  </Animatable.View>;
-  // if (!expanded) {
-  //   return (
-  //   );
-  // } else {
-  //   return (
-
-  //   );
-  // }
+    </Animated.View>
+  );
 };
 
 export const QuickMenu = ({ options, disabled = false }) => {
@@ -104,15 +108,17 @@ export const QuickMenu = ({ options, disabled = false }) => {
         width: "100%",
       }}
     >
-      <View style={{ width: '15%' }} />
-      <View style={{ width: '70%', justifyContent: 'center', flexDirection: 'row' }}>
+      <View style={{ width: "15%" }} />
+      <View
+        style={{ width: "70%", justifyContent: "center", flexDirection: "row" }}
+      >
         {options.map((option, index) => {
           return (
             <View
               style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
                 marginHorizontal: 16,
                 marginVertical: 8,
                 marginBottom: 12,
@@ -120,17 +126,28 @@ export const QuickMenu = ({ options, disabled = false }) => {
               }}
               key={index}
             >
-              <RoundedButton Icon={option.Icon} action={option.onPress} disabled={disabled}/>
+              <RoundedButton
+                Icon={option.Icon}
+                action={option.onPress}
+                disabled={disabled}
+              />
               {expanded && (
-                <Animatable.View 
-                  animation="fadeIn" 
-                  duration={300} 
-                  style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 4 }}
+                <Animatable.View
+                  animation="fadeIn"
+                  duration={300}
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    marginTop: 4,
+                  }}
                 >
-                  <Text style={[
-                    { color: disabled ? '#8a8a8a' : 'white', fontSize: 10 },
-                    fonts.light
-                  ]}>
+                  <Text
+                    style={[
+                      { color: disabled ? "#8a8a8a" : "white", fontSize: 10 },
+                      fonts.light,
+                    ]}
+                  >
                     {option.text}
                   </Text>
                 </Animatable.View>
@@ -140,18 +157,41 @@ export const QuickMenu = ({ options, disabled = false }) => {
         })}
       </View>
       <TouchableWithoutFeedback onPress={toggleExpand}>
-        <View style={{ 
-          width: '15%', 
-          height: '100%', 
-          alignItems: 'flex-start', 
-          justifyContent: 'center', 
-          flexDirection: 'row', 
-          gap: 4, 
-          paddingTop: 8 
-        }}>
-          <View style={{ width: 4, height: 4, backgroundColor: 'white', borderRadius: 2 }} />
-          <View style={{ width: 4, height: 4, backgroundColor: 'white', borderRadius: 2 }} />
-          <View style={{ width: 4, height: 4, backgroundColor: 'white', borderRadius: 2 }} />
+        <View
+          style={{
+            width: "15%",
+            height: "100%",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 4,
+            paddingTop: 8,
+          }}
+        >
+          <View
+            style={{
+              width: 4,
+              height: 4,
+              backgroundColor: "white",
+              borderRadius: 2,
+            }}
+          />
+          <View
+            style={{
+              width: 4,
+              height: 4,
+              backgroundColor: "white",
+              borderRadius: 2,
+            }}
+          />
+          <View
+            style={{
+              width: 4,
+              height: 4,
+              backgroundColor: "white",
+              borderRadius: 2,
+            }}
+          />
         </View>
       </TouchableWithoutFeedback>
     </Animated.View>
