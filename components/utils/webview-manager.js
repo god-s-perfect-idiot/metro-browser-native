@@ -16,8 +16,10 @@ const AppWebView = ({
   url,
   classOverrides,
   webViewRef,
+  navBarRef
 }) => {
   const [currentUrl, setCurrentUrl] = useState(url);
+  const {state, handler} = navBarRef;
 
   // const html2canvasScript = `
   //   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -115,8 +117,13 @@ const AppWebView = ({
         onLoadStart={handleLoadStart}
         onLoadEnd={handleLoadEnd}
         onLoadProgress={(e) => onLoad(e)}
-        // onMessage={handleMessage}
-        // injectedJavaScript={html2canvasScript}
+        onTouchEnd={(e) => {
+          if (state) {
+            handler(false);
+            return false;
+          }
+          return true;
+        }}
       />
       {/* </ViewShot> */}
 

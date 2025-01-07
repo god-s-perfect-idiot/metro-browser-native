@@ -25,6 +25,7 @@ export const MainView = ({ navigation, route }) => {
   const [searchEngine, setSearchEngine] = useState("google");
   const [loader, setLoader] = useState(0.0);
   const [isLoading, setIsLoading] = useState(false);
+  const [navBarExpanded, setNavBarExpanded] = useState(false);
   const webViewRef = useRef(null);
 
   const setTabUrl = async (url) => {
@@ -67,24 +68,26 @@ export const MainView = ({ navigation, route }) => {
   // }, [AsyncStorage.getItem("url")]);
 
   useEffect(() => {
-    // attachBackHandler(navigation);
     const backAction = () => {
       if (navigation.canGoBack()) {
         navigation.goBack();
         return true; // Prevent default behavior
       } else {
-        // Call your custom function here
-        popNavigation().then((url) => {
-          console.log("intercepted back url", url);
-          if (url) {
-            setUrl(url);
-            return true;
-          } else {
-            BackHandler.exitApp();
-            return false;
-          }
-        });
-        return true; // Prevent default behavior
+        if (navBarExpanded) {
+          setNavBarExpanded(false);
+          return true; // Prevent default behavior
+        } else {
+          popNavigation().then((url) => {
+            if (url) {
+              setUrl(url);
+              return true;
+            } else {
+              BackHandler.exitApp();
+              return false;
+            }
+          });
+          return true; // Prevent default behavior
+        }
       }
     };
 
@@ -94,7 +97,7 @@ export const MainView = ({ navigation, route }) => {
     );
 
     return () => backHandler.remove(); // Clean up the event listener
-  }, [navigation]);
+  }, [navigation, navBarExpanded]);
 
   useFocusEffect(
     useCallback(() => {
@@ -130,7 +133,6 @@ export const MainView = ({ navigation, route }) => {
           }
         }
       } else {
-        console.log(searchEngine)
         switch (searchEngine) {
           case "google":
             setUrl("https://www.google.com/search?q=" + urlPreview);
@@ -171,20 +173,6 @@ export const MainView = ({ navigation, route }) => {
     <View className="w-full h-full flex flex-col">
       <StatusBar />
       {url !== "" ? (
-        // <WebView
-        //   ref={webViewRef}
-        //   className="flex-1 w-full h-full"
-        //   source={{ uri: url }}
-        //   userAgent={agent}
-        //   onLoadProgress={(e) => {
-        //     setLoader(e.nativeEvent.progress);
-        //   }}
-        //   onLoadStart={(e) => {
-        //     setIsLoading(true);
-        //     updateUrl(e.nativeEvent.url);
-        //   }}
-        //   onLoadEnd={() => setIsLoading(false)}
-        // />
         <AppWebView
           url={url}
           webViewRef={webViewRef}
@@ -196,6 +184,10 @@ export const MainView = ({ navigation, route }) => {
           postLoad={() => setIsLoading(false)}
           onLoad={(e) => setLoader(e.nativeEvent.progress)}
           classOverrides={"flex-1 w-full h-full"}
+          navBarRef={{
+            state: navBarExpanded,
+            handler: setNavBarExpanded,
+          }}
         />
       ) : (
         <View className="bg-white flex-1 h-full w-full"></View>
@@ -208,6 +200,10 @@ export const MainView = ({ navigation, route }) => {
         loader={loader}
         isLoading={isLoading}
         webViewRef={webViewRef}
+        navBarRef={{
+          state: navBarExpanded,
+          handler: setNavBarExpanded,
+        }}
       />
     </View>
   );

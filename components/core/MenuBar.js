@@ -1,4 +1,4 @@
-import { useState, useRef  } from "react";
+import { useState, useRef, useEffect  } from "react";
 import {
   View,
   Text,
@@ -36,8 +36,9 @@ const ShortMenu = ({ children, handleExpand }) => {
   );
 };
 
-export const MenuBar = ({ options, controls, height = 14 }) => {
-  const [expanded, setExpanded] = useState(false);
+export const MenuBar = ({ options, controls, height = 14, navBarRef }) => {
+  const { state: expanded, handler: setExpanded } = navBarRef
+
   return <Animatable.View
     transition={["height"]}
     duration={250}
@@ -68,14 +69,6 @@ export const MenuBar = ({ options, controls, height = 14 }) => {
       <ShortMenu handleExpand={() => setExpanded(true)}>{controls}</ShortMenu>
     )}
   </Animatable.View>;
-  // if (!expanded) {
-  //   return (
-  //   );
-  // } else {
-  //   return (
-
-  //   );
-  // }
 };
 
 export const QuickMenu = ({ options, disabled = false }) => {
