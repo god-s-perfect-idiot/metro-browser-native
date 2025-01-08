@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar } from 'react-native';
+import { Linking, StatusBar } from 'react-native';
 import * as Font from 'expo-font';
 import { MainView } from './components/MainView';
 import { FavoritesView } from './components/FavoritesView';
@@ -12,6 +12,7 @@ import { TabsView } from './components/TabsView';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { RecentView } from './components/RecentView';
 import { clearNavigation } from './components/utils/app-helper';
+import { newTab } from './components/utils/tab-manager';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,21 @@ export default function App() {
     loadFont();
     clearNavigation();
   }, []);
+
+  useEffect(() => {
+    const handleUrl = ({url}) => {
+      // Handle the URL here
+      const searchEngine = AsyncStorage.getItem("searchEngine").then(() => {
+        newTab(searchEngine);
+        navigation.navigate("MainView", {
+          url: tab.url,
+        });
+      });
+    };
+  
+    // Add event listener for deep links
+    Linking.addEventListener('url', handleUrl);
+  });
 
   if (!fontLoaded) {
     return null;

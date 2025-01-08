@@ -101,28 +101,6 @@ export const TabsView = ({ navigation }) => {
       </View>
 
       <Menu navigation={navigation} />
-      {/* <View className="w-full flex flex-col mt-1">
-        {favorites.map((fav, index) => (
-          <View
-            className="w-full h-15 flex flex-row items-center justify-between"
-            key={index}
-          >
-            <Link
-              text={fav.name}
-              onPress={() => {
-                setURL(fav.url).then(() => {
-                  console.log("navigating", fav.url, fav);
-                  navigation.navigate("MainView", {
-                    url: fav.url,
-                  });
-                });
-              }}
-              classOverride="text-white text-xl mt-6"
-              isLowerCase={false}
-            />
-          </View>
-        ))}
-      </View> */}
     </View>
   );
 };
