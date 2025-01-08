@@ -61,12 +61,6 @@ export const MainView = ({ navigation, route }) => {
   //   // fetchAgent();
   // }, []);
 
-  // useEffect(() => {
-  //   AsyncStorage.getItem("url").then((url) => {
-  //     if (url) setUrl(url);
-  //   });
-  // }, [AsyncStorage.getItem("url")]);
-
   useEffect(() => {
     const backAction = () => {
       if (navigation.canGoBack()) {
