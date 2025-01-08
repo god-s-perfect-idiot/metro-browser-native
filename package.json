@@ -1,4 +1,4 @@
-{
+  {
   "name": "browser-native",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "deploy": "npx expo start --clear",
-    "tunnel": "npx expo start --tunnel"
+    "tunnel": "npx expo start --tunnel",
+    "build": "eas build -p android --profile preview"    
   },
   "dependencies": {
     "@expo-google-fonts/noto-sans": "^0.2.3",
