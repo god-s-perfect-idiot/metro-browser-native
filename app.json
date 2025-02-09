@@ -22,7 +22,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.metro.browser"
+      "package": "com.metro.browser",
+        "intentFilters": [
+          {
+            "action": "VIEW",
+            "autoVerify": true, 
+            "data": [
+              { "scheme": "http", "host": "*", "pathPrefix": "/*" },
+              { "scheme": "https", "host": "*", "pathPrefix": "/*" }
+            ],
+            "category": ["BROWSABLE", "DEFAULT"]
+          }
+        ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

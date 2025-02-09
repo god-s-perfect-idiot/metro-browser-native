@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import * as Font from 'expo-font';
+import * as Linking from 'expo-linking';
 import { MainView } from './components/MainView';
 import { FavoritesView } from './components/FavoritesView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,6 +13,7 @@ import { TabsView } from './components/TabsView';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { RecentView } from './components/RecentView';
 import { clearNavigation } from './components/utils/app-helper';
+import { newTab } from './components/utils/tab-manager';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +54,12 @@ export default function App() {
   if (!fontLoaded) {
     return null;
   }
+
+  Linking.addEventListener('url', ({ url }) => {
+    newTab(url);
+  });
+
+  const initialUrl = Linking.getInitialURL();
 
   return (
     <SafeAreaProvider>

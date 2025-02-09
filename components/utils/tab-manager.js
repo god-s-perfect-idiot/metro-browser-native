@@ -4,6 +4,35 @@ import { Image, View } from "react-native";
 
 const dimension = { width: 300, height: 300 };
 
+export const newTab = async (loadUrl = "") => {
+    AsyncStorage.getItem("tabs").then((tabs) => {
+        let url = loadUrl ||"";
+        switch (searchEngine) {
+          case "google":
+            url = "https://www.google.com";
+            break;
+          case "bing":
+            url = "https://www.bing.com";
+            break;
+          case "duckduckgo":
+            url = "https://www.duckduckgo.com";
+            break;
+          case "yahoo":
+            url = "https://www.yahoo.com";
+            break;
+          default:
+            url = "https://www.google.com";
+            break;
+        }
+        const newTabs = tabs
+          ? JSON.parse(tabs).concat({
+              url: url,
+            })
+          : [{ url: url }];
+        AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
+          });
+}
+
 export const Tab = ({ url }) => {
     // const [snapshotUri, setSnapshotUri] = useState(null);
 

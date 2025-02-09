@@ -33,32 +33,33 @@ const Menu = ({ navigation }) => {
             <RoundedButton
               Icon={<Plus width={20} stroke={"white"} strokeWidth={3} />}
               action={() => {
-                AsyncStorage.getItem("tabs").then((tabs) => {
-                  let url = "";
-                  switch (searchEngine) {
-                    case "google":
-                      url = "https://www.google.com";
-                      break;
-                    case "bing":
-                      url = "https://www.bing.com";
-                      break;
-                    case "duckduckgo":
-                      url = "https://www.duckduckgo.com";
-                      break;
-                    case "yahoo":
-                      url = "https://www.yahoo.com";
-                      break;
-                    default:
-                      url = "https://www.google.com";
-                      break;
-                  }
-                  const newTabs = tabs
-                    ? JSON.parse(tabs).concat({
-                        url: url,
-                      })
-                    : [{ url: url }];
-                  AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
-                    });
+                // AsyncStorage.getItem("tabs").then((tabs) => {
+                //   let url = "";
+                //   switch (searchEngine) {
+                //     case "google":
+                //       url = "https://www.google.com";
+                //       break;
+                //     case "bing":
+                //       url = "https://www.bing.com";
+                //       break;
+                //     case "duckduckgo":
+                //       url = "https://www.duckduckgo.com";
+                //       break;
+                //     case "yahoo":
+                //       url = "https://www.yahoo.com";
+                //       break;
+                //     default:
+                //       url = "https://www.google.com";
+                //       break;
+                //   }
+                //   const newTabs = tabs
+                //     ? JSON.parse(tabs).concat({
+                //         url: url,
+                //       })
+                //     : [{ url: url }];
+                //   AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
+                //     });
+                newTab();
               }}
             />
             {expanded && (
