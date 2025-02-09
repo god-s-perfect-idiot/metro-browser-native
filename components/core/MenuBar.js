@@ -41,14 +41,22 @@ export const MenuBar = ({ options, controls, height = 14, navBarRef }) => {
 
   const contentHeight = useRef(new Animated.Value(60)).current;
   
-  const toggleExpand = () => {
+  const animateExpand = () => {
     // Start height animation
     Animated.timing(contentHeight, {
-      toValue: expanded ? 60 : 350,
+      toValue: expanded ? 350 : 60,
       duration: 250,
       useNativeDriver: false,
     }).start();
-    
+  }
+
+  useEffect(() => {
+    animateExpand()
+  }, [expanded])
+
+  const toggleExpand = () => {
+    // Start height animation
+    animateExpand();
     // Update state after animation starts
     setExpanded(!expanded);
   };
@@ -94,7 +102,6 @@ export const QuickMenu = ({ options, disabled = false }) => {
       duration: 150,
       useNativeDriver: false,
     }).start();
-    console.log(options);
   };
 
   return (

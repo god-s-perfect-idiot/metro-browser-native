@@ -45,9 +45,7 @@ const AppWebView = ({
     try {
       // const message = JSON.parse(event.nativeEvent.data);
       // if (message.type === "screenshot") {
-      console.log("Screenshot captured:", uri);
       await AsyncStorage.setItem(`snap-${normalizeUrl(currentUrl)}`, uri);
-      console.log("Screenshot saved for:", currentUrl);
       // } else if (message.type === "error") {
       //   console.error("Screenshot capture error:", message.message);
       // }

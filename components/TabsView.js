@@ -111,7 +111,6 @@ export const TabsView = ({ navigation }) => {
               text={fav.name}
               onPress={() => {
                 setURL(fav.url).then(() => {
-                  console.log("navigating", fav.url, fav);
                   navigation.navigate("MainView", {
                     url: fav.url,
                   });

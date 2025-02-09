@@ -13,7 +13,6 @@ export const Select = ({
 
   useEffect(() => {
     setSelected(options.find((option) => option.value === defaultValue));
-    console.log("default value", defaultValue, options, selected);
   }, [defaultValue]);
 
   const [expanded, setExpanded] = useState(false);
