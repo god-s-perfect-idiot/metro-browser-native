@@ -136,7 +136,6 @@ export const MainView = ({ navigation, route }) => {
         switch (searchEngine) {
           case "google":
             setUrl("https://www.google.com/search?q=" + urlPreview);
-            console.log("https://www.google.com/search?q=" + urlPreview);
             break;
           case "bing":
             setUrl("https://www.bing.com/search?q=" + urlPreview);
@@ -165,7 +164,6 @@ export const MainView = ({ navigation, route }) => {
         return;
       setTabUrl(url);
       setUrl(url);
-      console.log("url updated to:", url);
     });
   };
 

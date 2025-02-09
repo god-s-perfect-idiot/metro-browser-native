@@ -50,7 +50,6 @@ export const RecentView = ({ navigation }) => {
                   text={recent}
                   onPress={() => {
                     setURL(recent).then(() => {
-                      console.log("navigating", recent, recent);
                       navigation.navigate("MainView", {
                         url: recent,
                       });
