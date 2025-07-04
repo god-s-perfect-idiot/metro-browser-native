@@ -9,26 +9,53 @@ import Link from "./core/Link";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { clearHistory } from "./utils/history-manager";
+import { getAllSearchEngines, setDefaultSearchEngine, getDefaultSearchEngine } from "./utils/search-engine-manager";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 export const SettingsView = ({ navigation }) => {
 
   const [quickButton, setQuickButton] = useState("tabs");
   const [searchEngine, setSearchEngine] = useState("google");
+  const [searchEngines, setSearchEngines] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
       const quickButton = await AsyncStorage.getItem("quickButton");
-      const searchEngine = await AsyncStorage.getItem("searchEngine");
+      const defaultEngine = await getDefaultSearchEngine();
+      const engines = await getAllSearchEngines();
+      
       if (quickButton) setQuickButton(quickButton);
-      if (searchEngine) setSearchEngine(searchEngine);
-    };
-    fetchData();
-  }, []);
+      if (defaultEngine) setSearchEngine(defaultEngine);
+      setSearchEngines(engines);
+    } catch (error) {
+      console.error("Error loading settings:", error);
+      // Set fallback values
+      setSearchEngines([
+        { id: "google", name: "🔍 Google", value: "google" },
+        { id: "bing", name: "🔎 Bing", value: "bing" },
+        { id: "yahoo", name: "📧 Yahoo", value: "yahoo" },
+        { id: "duckduckgo", name: "🦆 DuckDuckGo", value: "duckduckgo" },
+        { id: "ecosia", name: "🌱 Ecosia", value: "ecosia" }
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Use focus effect to reload data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   return (
     <View className="flex flex-col w-full h-full bg-black p-4">
       <AppTitle title="Settings" />
-      <PageTitle title="Metro Browser" isUpperCase classOverride={"w-[200%]"}/>
+      <PageTitle title="Metro Browser" classOverride={"w-[200%]"}/>
       <ScrollView className="flex-1" bounces alwaysBounceVertical>
         <View className="flex flex-col mt-6">
           <Select
@@ -70,42 +97,33 @@ export const SettingsView = ({ navigation }) => {
             }}
             classOverride="mt-6"
           />
-          <Select
-            options={[
-              { name: "google", value: "google" },
-              { name: "bing", value: "bing" },
-              { name: "yahoo", value: "yahoo" },
-              { name: "duckduckgo", value: "duckduckgo"}
-            ]}
-            defaultValue={searchEngine}
-            title="Set Default Search Engine to"
-            onChange={async (option) => {
-              switch (option.value) {
-                case "google":
-                  await AsyncStorage.setItem("searchEngine", "google");
-                  setSearchEngine("google");
-                  break;
-                case "bing":
-                  await AsyncStorage.setItem("searchEngine", "bing");
-                  setSearchEngine("bing");
-                  break;
-                case "yahoo":
-                  await AsyncStorage.setItem("searchEngine", "yahoo");
-                  setSearchEngine("yahoo");
-                  break;
-                case "duckduckgo":
-                  await AsyncStorage.setItem("searchEngine", "duckduckgo");
-                  setSearchEngine("duckduckgo");
-                  break;
-              }
-            }}
-            classOverride="mt-6"
-          />
+          {!isLoading && (
+            <Select
+              options={searchEngines.map(engine => ({
+                name: `${engine.icon} ${engine.name}`,
+                value: engine.id
+              }))}
+              defaultValue={searchEngine}
+              title="Set Default Search Engine to"
+              onChange={async (option) => {
+                await setDefaultSearchEngine(option.value);
+                setSearchEngine(option.value);
+              }}
+              classOverride="mt-6"
+            />
+          )}
           <Text className="text-[#b0b0b0] text-[13px] mt-6" style={fonts.light}>
             We'll download full web pages.
           </Text>
         </View>
         <View className="flex flex-col mt-12 justify-start items-start">
+          <Button
+            text="manage search engines"
+            onPress={() => {
+              navigation.navigate('ManageSearchEngines');
+            }}
+            classOverride="px-auto mb-4"
+          />
           <Button
             text="delete history"
             onPress={() => {

@@ -9,13 +9,38 @@ export const Select = ({
   classOverride = "",
   defaultValue,
 }) => {
-  const [selected, setSelected] = useState(options[0]);
+  const [selected, setSelected] = useState(null);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    setSelected(options.find((option) => option.value === defaultValue));
-  }, [defaultValue]);
+    if (options && options.length > 0) {
+      // Try to find the option matching defaultValue
+      const foundOption = options.find((option) => option.value === defaultValue);
+      if (foundOption) {
+        setSelected(foundOption);
+      } else {
+        // Fallback to first option if defaultValue not found
+        setSelected(options[0]);
+      }
+    }
+  }, [defaultValue, options]);
 
-  const [expanded, setExpanded] = useState(false);
+  // Don't render if no options or no selected option
+  if (!options || options.length === 0 || !selected) {
+    return (
+      <View className={`flex ${classOverride}`}>
+        <Text className="text-[#b0b0b0] text-[13px]" style={fonts.light}>
+          {title}
+        </Text>
+        <View className="mt-2 w-full pr-4 pl-2 py-1 text-base border-white border-2 border-solid justify-center item-center">
+          <Text className="text-white text-[15px]" style={fonts.regular}>
+            Loading...
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View className={`flex ${classOverride}`}>
       <Text className="text-[#b0b0b0] text-[13px]" style={fonts.light}>

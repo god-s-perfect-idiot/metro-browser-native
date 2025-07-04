@@ -7,6 +7,7 @@ import Link from "../core/Link";
 import { fonts } from "../../styles/fonts";
 import { MenuBar, QuickMenu } from "../core/MenuBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getSearchEngineById, getDefaultSearchEngine } from "../utils/search-engine-manager";
 
 const Menu = ({ navigation }) => {
   const [expanded, setExpanded] = useState(false);
@@ -14,8 +15,8 @@ const Menu = ({ navigation }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const searchEngine = await AsyncStorage.getItem("searchEngine");
-      if (searchEngine) setSearchEngine(searchEngine);
+      const defaultEngine = await getDefaultSearchEngine();
+      if (defaultEngine) setSearchEngine(defaultEngine);
     };
     fetchData();
   }, []);
@@ -32,33 +33,38 @@ const Menu = ({ navigation }) => {
           <View className="flex flex-col justify-center items-center mx-4 my-2 mb-3 px-1">
             <RoundedButton
               Icon={<Plus width={20} stroke={"white"} strokeWidth={3} />}
-              action={() => {
-                AsyncStorage.getItem("tabs").then((tabs) => {
-                  let url = "";
-                  switch (searchEngine) {
-                    case "google":
-                      url = "https://www.google.com";
-                      break;
-                    case "bing":
-                      url = "https://www.bing.com";
-                      break;
-                    case "duckduckgo":
-                      url = "https://www.duckduckgo.com";
-                      break;
-                    case "yahoo":
-                      url = "https://www.yahoo.com";
-                      break;
-                    default:
-                      url = "https://www.google.com";
-                      break;
+              action={async () => {
+                try {
+                  const engine = await getSearchEngineById(searchEngine);
+                  let url = "https://www.google.com"; // fallback
+                  
+                  if (engine) {
+                    // Extract the base URL from the search URL
+                    const searchUrl = engine.url;
+                    const baseUrl = searchUrl.split('?')[0].split('/search')[0];
+                    url = baseUrl;
                   }
-                  const newTabs = tabs
-                    ? JSON.parse(tabs).concat({
-                        url: url,
-                      })
-                    : [{ url: url }];
-                  AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
-                    });
+                  
+                  AsyncStorage.getItem("tabs").then((tabs) => {
+                    const newTabs = tabs
+                      ? JSON.parse(tabs).concat({
+                          url: url,
+                        })
+                      : [{ url: url }];
+                    AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
+                  });
+                } catch (error) {
+                  console.error("Error getting search engine:", error);
+                  // Fallback to Google
+                  AsyncStorage.getItem("tabs").then((tabs) => {
+                    const newTabs = tabs
+                      ? JSON.parse(tabs).concat({
+                          url: "https://www.google.com",
+                        })
+                      : [{ url: "https://www.google.com" }];
+                    AsyncStorage.setItem("tabs", JSON.stringify(newTabs));
+                  });
+                }
               }}
             />
             {expanded && (

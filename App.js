@@ -12,6 +12,8 @@ import { TabsView } from './components/TabsView';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { RecentView } from './components/RecentView';
 import { clearNavigation } from './components/utils/app-helper';
+import { ManageSearchEnginesView } from './components/ManageSearchEnginesView';
+import { AddSearchEngineView } from './components/AddSearchEngineView';
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +67,8 @@ export default function App() {
             <Stack.Screen name="Settings" component={SettingsView} options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="Recent" component={RecentView} options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="Tabs" component={TabsView} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="ManageSearchEngines" component={ManageSearchEnginesView} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="AddSearchEngine" component={AddSearchEngineView} options={{ animation: 'slide_from_right' }} />
           </Stack.Navigator>
         </SafeAreaView>
       </NavigationContainer>
