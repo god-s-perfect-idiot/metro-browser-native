@@ -14,6 +14,7 @@ import {
   normalizeUrl,
   popNavigation,
 } from "./utils/app-helper";
+import { buildSearchUrl } from "./utils/search-engine-manager";
 
 export const MainView = ({ navigation, route }) => {
   // idk how but this works. god bless react native
@@ -118,7 +119,7 @@ export const MainView = ({ navigation, route }) => {
     if (typeof e === "string") setUrlPreview(e);
   };
 
-  const onSubmitURL = () => {
+  const onSubmitURL = async () => {
     // if search query, append to search engine
     if (!isURL(urlPreview)) {
       if (isIncompleteURL(urlPreview)) {
@@ -133,23 +134,9 @@ export const MainView = ({ navigation, route }) => {
           }
         }
       } else {
-        switch (searchEngine) {
-          case "google":
-            setUrl("https://www.google.com/search?q=" + urlPreview);
-            break;
-          case "bing":
-            setUrl("https://www.bing.com/search?q=" + urlPreview);
-            break;
-          case "duckduckgo":
-            setUrl("https://www.duckduckgo.com/?q=" + urlPreview);
-            break;
-          case "yahoo":
-            setUrl("https://search.yahoo.com/search?p=" + urlPreview);
-            break;
-          default:
-            setUrl("https://www.google.com/search?q=" + urlPreview);
-            break;
-        }
+        // Use the new search engine manager
+        const searchUrl = await buildSearchUrl(urlPreview, searchEngine);
+        setUrl(searchUrl);
       }
     } else {
       // add https:// if not present and www. if not present

@@ -9,6 +9,7 @@ export const TextBox = ({
   classOverrides = "",
   title = "",
   placeholder = "Enter URL",
+  boxOverrides = "",
 }) => {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef(null);
@@ -61,7 +62,7 @@ export const TextBox = ({
         <TextInput
           className={`${
             focused ? "bg-white" : "bg-[#bfbfbf]"
-          }  w-full h-9 px-4 text-[15px]`}
+          }  w-full h-9 px-4 text-[15px] ${boxOverrides}`}
           style={fonts.regular}
           cursorColor={"black"}
           selectionColor={"#a013ec"}
