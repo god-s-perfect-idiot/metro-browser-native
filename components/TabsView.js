@@ -10,6 +10,17 @@ import { X } from "react-native-feather";
 import ScaledWebView from "./utils/webview-manager";
 import { Tab } from "./utils/tab-manager";
 
+// Utility function to extract domain from URL
+const getDomainFromUrl = (url) => {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.hostname.replace('www.', '');
+  } catch (error) {
+    // Fallback for invalid URLs
+    return url.replace(/^https?:\/\//, '').replace('www.', '').split('/')[0];
+  }
+};
+
 export const TabsView = ({ navigation }) => {
   const [tabs, setTabs] = useState([]);
 
@@ -18,6 +29,16 @@ export const TabsView = ({ navigation }) => {
       const tabs = await AsyncStorage.getItem("tabs");
       if (tabs) {
         setTabs(JSON.parse(tabs));
+      } else {
+        // Add some sample tabs for testing
+        const sampleTabs = [
+          { url: "https://www.google.com" },
+          { url: "https://www.github.com" },
+          { url: "https://www.stackoverflow.com" },
+          { url: "https://www.wikipedia.org" }
+        ];
+        setTabs(sampleTabs);
+        AsyncStorage.setItem("tabs", JSON.stringify(sampleTabs));
       }
     }
     loadTabs();
@@ -45,6 +66,10 @@ export const TabsView = ({ navigation }) => {
                     url: tab.url,
                   });
                 }}
+                onLongPress={() => {
+                  // Show full URL on long press (you could add an alert or modal here)
+                  console.log("Full URL:", tab.url);
+                }}
                 key={index}
               >
                 <View className="flex flex-col mr-8 mb-8">
@@ -70,7 +95,7 @@ export const TabsView = ({ navigation }) => {
                     /> */}
                     {/* <Image source={{ uri: tab.url }} /> */}
                     {/* <ScaledWebView url={tab.url} /> */}
-                    <Tab url={tab.url} />
+                    <Tab url={tab.url} showScreenshot={true} />
                     <TouchableWithoutFeedback
                       onPress={() => {
                         setTabs(tabs.filter((t, i) => i !== index));
@@ -91,7 +116,7 @@ export const TabsView = ({ navigation }) => {
                     numberOfLines={1}
                     style={fonts.regular}
                   >
-                    {tab.url}
+                    {getDomainFromUrl(tab.url) || tab.url}
                   </Text>
                 </View>
               </TouchableWithoutFeedback>
