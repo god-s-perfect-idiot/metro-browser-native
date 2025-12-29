@@ -27,9 +27,31 @@ const ShortMenu = ({ children, handleExpand }) => {
       {children}
       <TouchableWithoutFeedback onPress={handleExpand}>
         <View className="w-[15%] h-full items-start justify-center flex flex-row gap-1 pt-2">
-          <View className="w-1 h-1 bg-white rounded-full" />
-          <View className="w-1 h-1 bg-white rounded-full" />
-          <View className="w-1 h-1 bg-white rounded-full" />
+          
+        <View
+            style={{
+              width: 5,
+              height: 5,
+              backgroundColor: "white",
+              borderRadius: 5,
+            }}
+          />
+          <View
+            style={{
+              width: 5,
+              height: 5,
+              backgroundColor: "white",
+              borderRadius: 5,
+            }}
+          />
+          <View
+            style={{
+              width: 5,
+              height: 5,
+              backgroundColor: "white",
+              borderRadius: 5,
+            }}
+          />
         </View>
       </TouchableWithoutFeedback>
     </View>
@@ -178,26 +200,26 @@ export const QuickMenu = ({ options, disabled = false }) => {
         >
           <View
             style={{
-              width: 4,
-              height: 4,
+              width: 5,
+              height: 5,
               backgroundColor: "white",
-              borderRadius: 2,
+              borderRadius: 5,
             }}
           />
           <View
             style={{
-              width: 4,
-              height: 4,
+              width: 5,
+              height: 5,
               backgroundColor: "white",
-              borderRadius: 2,
+              borderRadius: 5,
             }}
           />
           <View
             style={{
-              width: 4,
-              height: 4,
+              width: 5,
+              height: 5,
               backgroundColor: "white",
-              borderRadius: 2,
+              borderRadius: 5,
             }}
           />
         </View>

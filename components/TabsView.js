@@ -1,4 +1,10 @@
-import { Image, ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { AppTitle } from "./core/AppTitle";
 import { PageTitle } from "./core/Pagetitle";
 import Menu from "./compound/TabsBottomBar";
@@ -9,15 +15,19 @@ import WebView from "react-native-webview";
 import { X } from "react-native-feather";
 import ScaledWebView from "./utils/webview-manager";
 import { Tab } from "./utils/tab-manager";
+import Close from "./icons/Close";
 
 // Utility function to extract domain from URL
 const getDomainFromUrl = (url) => {
   try {
     const urlObj = new URL(url);
-    return urlObj.hostname.replace('www.', '');
+    return urlObj.hostname.replace("www.", "");
   } catch (error) {
     // Fallback for invalid URLs
-    return url.replace(/^https?:\/\//, '').replace('www.', '').split('/')[0];
+    return url
+      .replace(/^https?:\/\//, "")
+      .replace("www.", "")
+      .split("/")[0];
   }
 };
 
@@ -35,7 +45,7 @@ export const TabsView = ({ navigation }) => {
           { url: "https://www.google.com" },
           { url: "https://www.github.com" },
           { url: "https://www.stackoverflow.com" },
-          { url: "https://www.wikipedia.org" }
+          { url: "https://www.wikipedia.org" },
         ];
         setTabs(sampleTabs);
         AsyncStorage.setItem("tabs", JSON.stringify(sampleTabs));
@@ -105,8 +115,8 @@ export const TabsView = ({ navigation }) => {
                         );
                       }}
                     >
-                      <View className="absolute top-2 right-2 bg-black border-2 border-white rounded-full">
-                        <X className="text-white" />
+                      <View className="absolute top-2 right-2 bg-black border-[2.5px] border-white rounded-full">
+                        <Close color="white" size={25} />
                       </View>
                     </TouchableWithoutFeedback>
                   </View>

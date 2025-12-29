@@ -9,7 +9,7 @@ const RoundedButton = ({ classOverrides = "", Icon, action, disabled=false }) =>
       }}
     >
       <View
-        className={`rounded-full border-2 h-9 w-9 flex items-center justify-center ${
+        className={`rounded-full border-[2.5px] h-9 w-9 flex items-center justify-center ${
           disabled ? "border-[#8a8a8a]" : "border-white"
         } ${classOverrides}`}
       >

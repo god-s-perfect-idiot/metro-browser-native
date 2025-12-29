@@ -8,6 +8,8 @@ import { TextBox } from "../core/TextBox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import * as Animatable from "react-native-animatable";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Foundation from '@expo/vector-icons/Foundation';
 
 const Menu = ({
   url,
@@ -48,9 +50,9 @@ const Menu = ({
             <RoundedButton
               Icon={
                 quickButton === "tabs" ? (
-                  <Copy width={20} stroke={"white"} />
+                  <Ionicons name="copy-sharp" size={18} color="white" />
                 ) : (
-                  <Star width={20} stroke={"white"} />
+                  <Foundation name="star" size={20} color="white" />
                 )
               }
               action={() => {
