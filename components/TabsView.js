@@ -59,7 +59,7 @@ export const TabsView = ({ navigation }) => {
       {/* <StatusBar /> */}
       <View className="flex-1 p-4">
         <AppTitle title="Tabs" />
-        <PageTitle title="phone" />
+        <PageTitle title="phone"/>
         <ScrollView className="mt-4">
           <Text className="text-base text-[#b0b0b0]" style={fonts.light}>
             recent

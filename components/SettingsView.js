@@ -3,7 +3,6 @@ import { AppTitle } from "./core/AppTitle";
 import { PageTitle } from "./core/Pagetitle";
 import { TextBox } from "./core/TextBox";
 import { Select } from "./core/Select";
-import { fonts } from "../styles/fonts";
 import { Button } from "./core/Button";
 import Link from "./core/Link";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,6 +11,7 @@ import { clearHistory } from "./utils/history-manager";
 import { getAllSearchEngines, setDefaultSearchEngine, getDefaultSearchEngine } from "./utils/search-engine-manager";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { fonts } from "../styles/fonts";
 
 export const SettingsView = ({ navigation }) => {
 
@@ -112,7 +112,7 @@ export const SettingsView = ({ navigation }) => {
               classOverride="mt-6"
             />
           )}
-          <Text className="text-[#b0b0b0] text-[13px] mt-6" style={fonts.light}>
+          <Text className="text-[#b0b0b0] text-sm mt-6" style={fonts.regular}>
             We'll download full web pages.
           </Text>
         </View>
@@ -131,17 +131,19 @@ export const SettingsView = ({ navigation }) => {
             }}
             classOverride="px-auto"
           />
-          <Text className="text-[#b0b0b0] text-[13px] mt-8" style={fonts.light}>
+          <Text className="text-[#b0b0b0] text-sm mt-8" style={fonts.regular}>
             Deletes all your browsing history, cookies and temporary Internet
             files from your phone.
           </Text>
           <Link
-            classOverride="mt-6 underline text-[13px]"
+            classOverride="mt-6 underline !text-base"
+            fontStyle="regular"
             text="Privacy Statement"
             isLowerCase={false}
           />
           <Link
-            classOverride="mt-6 underline text-[13px]"
+            classOverride="mt-6 underline !text-base"
+            fontStyle="regular"
             text="Learn about these settings"
             isLowerCase={false}
           />

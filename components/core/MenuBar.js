@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect  } from "react";
+import { useState, useRef, useEffect, memo  } from "react";
 import {
   View,
   Text,
@@ -58,10 +58,12 @@ const ShortMenu = ({ children, handleExpand }) => {
   );
 };
 
-export const MenuBar = ({ options, controls, height = 14, navBarRef }) => {
+const MenuBarComponent = ({ options, controls, height = 14, navBarRef, keyboardHeight = 0 }) => {
   const { state: expanded, handler: setExpanded } = navBarRef
 
   const contentHeight = useRef(new Animated.Value(60)).current;
+  const bottomPosition = useRef(new Animated.Value(0)).current;
+  const keyboardHeightRef = useRef(keyboardHeight);
   
   const animateExpand = () => {
     // Start height animation
@@ -75,6 +77,18 @@ export const MenuBar = ({ options, controls, height = 14, navBarRef }) => {
   useEffect(() => {
     animateExpand()
   }, [expanded])
+
+  useEffect(() => {
+    // Only animate if keyboardHeight actually changed
+    if (keyboardHeightRef.current !== keyboardHeight) {
+      keyboardHeightRef.current = keyboardHeight;
+      Animated.timing(bottomPosition, {
+        toValue: keyboardHeight,
+        duration: 250,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [keyboardHeight])
 
   const toggleExpand = () => {
     // Start height animation
@@ -91,7 +105,7 @@ export const MenuBar = ({ options, controls, height = 14, navBarRef }) => {
         flexDirection: 'row',
         backgroundColor: '#222',
         position: 'absolute',
-        bottom: 0,
+        bottom: bottomPosition,
         width: '100%',
         overflow: 'hidden', // Important to prevent content from showing during animation
       }}
@@ -112,6 +126,19 @@ export const MenuBar = ({ options, controls, height = 14, navBarRef }) => {
     </Animated.View>
   );
 };
+
+export const MenuBar = memo(MenuBarComponent, (prevProps, nextProps) => {
+  // Re-render only if these props change (keyboardHeight changes handled via useEffect)
+  const shouldUpdate = (
+    prevProps.options !== nextProps.options ||
+    prevProps.controls !== nextProps.controls ||
+    prevProps.height !== nextProps.height ||
+    prevProps.navBarRef.state !== nextProps.navBarRef.state ||
+    prevProps.navBarRef.handler !== nextProps.navBarRef.handler
+  );
+  // Return true to prevent re-render, false to allow it
+  return !shouldUpdate;
+});
 
 export const QuickMenu = ({ options, disabled = false }) => {
   const [expanded, setExpanded] = useState(false);
@@ -173,8 +200,9 @@ export const QuickMenu = ({ options, disabled = false }) => {
                   }}
                 >
                   <Text
+                    className="text-xs"
                     style={[
-                      { color: disabled ? "#8a8a8a" : "white", fontSize: 10 },
+                      { color: disabled ? "#8a8a8a" : "white" },
                       fonts.light,
                     ]}
                   >

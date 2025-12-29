@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, StatusBar, BackHandler } from "react-native";
+import { View, Text, StatusBar, BackHandler, Keyboard } from "react-native";
 import WebView from "react-native-webview";
 import BottomBar from "./compound/MainBottomBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,7 +27,9 @@ export const MainView = ({ navigation, route }) => {
   const [loader, setLoader] = useState(0.0);
   const [isLoading, setIsLoading] = useState(false);
   const [navBarExpanded, setNavBarExpanded] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const webViewRef = useRef(null);
+  const loadingTimeoutRef = useRef(null);
 
   const setTabUrl = async (url) => {
     const tabData = await AsyncStorage.getItem("tabs");
@@ -102,18 +104,90 @@ export const MainView = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
+      // Close the bottom bar when navigating back to MainView
+      setNavBarExpanded(false);
+      
       const fetchData = async () => {
-        const tabData = await AsyncStorage.getItem("tabs");
-        // const tab = await AsyncStorage.getItem("tab");
-        const url = JSON.parse(tabData)[0].url;
-        if (url) setUrl(url);
+        // Check if URL was passed via route params (from intent)
+        if (route?.params?.url) {
+          setUrl(route.params.url);
+          await setTabUrl(route.params.url);
+          // Clear the param so it doesn't override on next focus
+          navigation.setParams({ url: undefined });
+        } else {
+          const tabData = await AsyncStorage.getItem("tabs");
+          // const tab = await AsyncStorage.getItem("tab");
+          const url = JSON.parse(tabData)[0].url;
+          if (url) setUrl(url);
+        }
         const searchEngine = await AsyncStorage.getItem("searchEngine");
         if (searchEngine) setSearchEngine(searchEngine);
         // if (tab) setTab(tab);
       };
       fetchData();
-    }, [])
+    }, [route?.params?.url, navigation])
   );
+
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      'keyboardWillShow',
+      (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+      }
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      'keyboardWillHide',
+      () => {
+        setKeyboardHeight(0);
+      }
+    );
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+      }
+    );
+
+    return () => {
+      keyboardWillShowListener.remove();
+      keyboardWillHideListener.remove();
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  // Timeout to hide loading bar if it gets stuck
+  useEffect(() => {
+    if (isLoading) {
+      // Clear any existing timeout
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+      // Set a timeout to hide the loading bar after 3 seconds
+      loadingTimeoutRef.current = setTimeout(() => {
+        setIsLoading(false);
+        setLoader(0.0);
+      }, 3000); // 3 seconds timeout
+    } else {
+      // Clear timeout when loading stops normally
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+    }
+
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, [isLoading]);
 
   const onURLChange = (e) => {
     if (typeof e === "string") setUrlPreview(e);
@@ -189,6 +263,7 @@ export const MainView = ({ navigation, route }) => {
           state: navBarExpanded,
           handler: setNavBarExpanded,
         }}
+        keyboardHeight={keyboardHeight}
       />
     </View>
   );

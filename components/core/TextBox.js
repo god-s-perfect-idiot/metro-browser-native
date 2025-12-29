@@ -13,6 +13,7 @@ export const TextBox = ({
 }) => {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef(null);
+  const inputRefWithTitle = useRef(null);
 
   const handleFocus = () => {
     setFocused(true);
@@ -26,13 +27,58 @@ export const TextBox = ({
 
   const handleBlur = () => {
     setFocused(false);
+    // Ensure selection is at start to show leftmost text
+    const currentRef = inputRef.current || inputRefWithTitle.current;
+    if (currentRef) {
+      setTimeout(() => {
+        if (currentRef) {
+          currentRef.setSelection(0, 0);
+        }
+      }, 0);
+    }
   };
 
   useEffect(() => {
-    if (!focused && inputRef.current) {
-      inputRef.current.setSelection(0, 0);
+    if (!focused) {
+      const currentRef = inputRef.current || inputRefWithTitle.current;
+      if (currentRef) {
+        // Reset selection to start to show leftmost text
+        setTimeout(() => {
+          if (currentRef) {
+            currentRef.setSelection(0, 0);
+          }
+        }, 0);
+      }
     }
   }, [focused]);
+
+  // When defaultValue changes and not focused, ensure selection is at start
+  useEffect(() => {
+    if (!focused) {
+      const currentRef = inputRef.current || inputRefWithTitle.current;
+      if (currentRef) {
+        setTimeout(() => {
+          if (currentRef) {
+            currentRef.setSelection(0, 0);
+          }
+        }, 0);
+      }
+    }
+  }, [defaultValue, focused]);
+
+  // On initial mount, ensure selection is at start if not focused
+  useEffect(() => {
+    if (!focused) {
+      const currentRef = inputRef.current || inputRefWithTitle.current;
+      if (currentRef) {
+        setTimeout(() => {
+          if (currentRef) {
+            currentRef.setSelection(0, 0);
+          }
+        }, 100);
+      }
+    }
+  }, []);
 
   if (title === "") {
     return (
@@ -60,18 +106,22 @@ export const TextBox = ({
           {title}
         </Text>
         <TextInput
+          ref={inputRefWithTitle}
           className={`${
             focused ? "bg-white" : "bg-[#bfbfbf]"
-          }  w-full h-9 px-4 text-[15px] ${boxOverrides}`}
+          }  w-full h-fit min-h-9 px-4 text-[15px] ${boxOverrides}`}
           style={fonts.regular}
           cursorColor={"black"}
           selectionColor={"#a013ec"}
           onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onBlur={handleBlur}
           placeholder={placeholder}
           defaultValue={defaultValue}
           onChangeText={onChangeText}
           onSubmitEditing={onSubmitText}
+          textAlign="left"
+          autoCorrect={false}
+          autoCapitalize="none"
         />
       </View>
     );

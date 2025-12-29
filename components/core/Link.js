@@ -10,15 +10,16 @@ const Link = ({
   text,
   numberOfLines = 1,
   helper,
+  fontStyle = "light",
 }) => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View className="flex flex-col items-start">
         <Text
-          className={`${
+          className={`text-lg ${
             disabled ? "text-[#8a8a8a]" : "text-white"
           } ${classOverride} ${isLowerCase && "lowercase"}`}
-          style={fonts.light}
+          style={fonts[fontStyle]}
           numberOfLines={numberOfLines}
         >
           {text}

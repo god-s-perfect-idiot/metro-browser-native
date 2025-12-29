@@ -7,6 +7,7 @@ import Link from "../core/Link";
 import { fonts } from "../../styles/fonts";
 import {MenuBar, QuickMenu} from "../core/MenuBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 const Menu = ({
     navigation,
@@ -19,7 +20,7 @@ const Menu = ({
                 {
                     text: "delete",
                     onPress: methods.delete,
-                    Icon: <Trash2 width={20} stroke={props.disabled ? "#8a8a8a" : "white"} strokeWidth={3}/>
+                    Icon: <Fontisto name="trash" size={16} color="white" />
                 }
             ]}
             disabled={props.disabled}
