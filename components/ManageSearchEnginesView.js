@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, Alert, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { AppTitle } from "./core/AppTitle";
 import { PageTitle } from "./core/Pagetitle";
 import { Button } from "./core/Button";
+import { Alert } from "./core/Alert";
 import { fonts } from "../styles/fonts";
 import {
   getAllSearchEngines,
@@ -12,11 +13,14 @@ import {
 import { Trash2 } from "react-native-feather";
 import RoundedButton from "./core/RoundedButton";
 import { useFocusEffect } from "@react-navigation/native";
+import Fontisto from "@expo/vector-icons/Fontisto";
 
 export const ManageSearchEnginesView = ({ navigation }) => {
   const [searchEngines, setSearchEngines] = useState([]);
   const [defaultEngine, setDefaultEngine] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState(null);
 
   useEffect(() => {
     loadSearchEngines();
@@ -42,14 +46,26 @@ export const ManageSearchEnginesView = ({ navigation }) => {
     }, [])
   );
 
+  const showAlert = (title, message, buttons) => {
+    setAlertConfig({ title, message, buttons });
+    setAlertVisible(true);
+  };
+
+  const hideAlert = () => {
+    setAlertVisible(false);
+    setAlertConfig(null);
+  };
+
   const handleDeleteEngine = async (engine) => {
     // Don't allow deletion of default engines
     if (!engine.id.startsWith("custom_")) {
-      Alert.alert("Cannot Delete", "Default search engines cannot be deleted.");
+      showAlert("Cannot Delete", "Default search engines cannot be deleted.", [
+        { text: "OK", style: "default" },
+      ]);
       return;
     }
 
-    Alert.alert(
+    showAlert(
       "Delete Search Engine",
       `Are you sure you want to delete "${engine.name}"?`,
       [
@@ -64,9 +80,13 @@ export const ManageSearchEnginesView = ({ navigation }) => {
             try {
               await removeCustomSearchEngine(engine.id);
               await loadSearchEngines(); // Reload the list
-              Alert.alert("Success", "Search engine deleted successfully.");
+              showAlert("Success", "Search engine deleted successfully.", [
+                { text: "OK", style: "default" },
+              ]);
             } catch (error) {
-              Alert.alert("Error", "Failed to delete search engine.");
+              showAlert("Error", "Failed to delete search engine.", [
+                { text: "OK", style: "default" },
+              ]);
             }
           },
         },
@@ -82,30 +102,45 @@ export const ManageSearchEnginesView = ({ navigation }) => {
     navigation.goBack();
   };
 
+  // Generate a consistent random color based on engine name (dark for white text readability)
+  const getRandomColor = (name) => {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = hash % 360;
+    const saturation = 50 + (hash % 30); // 50-80%
+    const lightness = 25 + (hash % 20); // 25-45% (dark enough for white text)
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
+
   const renderEngineItem = (engine) => {
     const isDefault = engine.id === defaultEngine;
     const isCustom = engine.id.startsWith("custom_");
+    const backgroundColor = getRandomColor(engine.name);
 
     return (
       <View
         key={engine.id}
-        className="flex flex-row items-center justify-between p-4"
+        className="flex flex-row items-center justify-between py-2"
       >
         <View className="flex flex-row items-center flex-1">
-          <Text className="text-white text-lg mr-3">{engine.icon}</Text>
-          <View className="flex-1">
-            <Text className="text-white text-[15px]" style={fonts.regular}>
+          <View 
+            className="flex w-20 h-20 justify-end items-start pl-2 pb-2"
+            style={{ backgroundColor }}
+          >
+            <Text className="text-white text-3xl lowercase">{engine.name.charAt(0)}</Text>
+          </View>
+          <View className="flex-1 ml-2">
+            <Text className="text-white text-xl" style={fonts.regular}>
               {engine.name}
             </Text>
-            <Text
-              className="text-[#b0b0b0] text-[11px] mt-1"
-              style={fonts.light}
-            >
+            <Text className="text-[#b0b0b0] text-sm mt-1" style={fonts.light}>
               {engine.url}
             </Text>
             {isDefault && (
               <Text
-                className="text-[#a013ec] text-[11px] mt-1"
+                className="text-[#046ab8] text-base mt-1"
                 style={fonts.light}
               >
                 Default
@@ -113,7 +148,7 @@ export const ManageSearchEnginesView = ({ navigation }) => {
             )}
             {isCustom && (
               <Text
-                className="text-[#b0b0b0] text-[11px] mt-1"
+                className="text-[#b0b0b0] text-base mt-1"
                 style={fonts.light}
               >
                 Custom
@@ -128,7 +163,7 @@ export const ManageSearchEnginesView = ({ navigation }) => {
             className="ml-4"
           >
             <RoundedButton
-              Icon={<Trash2 className="text-white" size={16} />}
+              Icon={<Fontisto name="trash" size={16} color="white" />}
               action={() => handleDeleteEngine(engine)}
               classOverride="bg-red-500 p-1"
             />
@@ -159,10 +194,17 @@ export const ManageSearchEnginesView = ({ navigation }) => {
   return (
     <View className="flex flex-col w-full h-full bg-black p-4">
       <AppTitle title="Search Engines" />
-      <PageTitle title="Manage Search" classOverride={"pb-2"}/>
+      <PageTitle title="Manage" classOverride={"pb-2"} />
+      <Alert
+        visible={alertVisible}
+        title={alertConfig?.title}
+        message={alertConfig?.message}
+        buttons={alertConfig?.buttons || []}
+        onClose={hideAlert}
+      />
       <ScrollView className="flex-1" bounces alwaysBounceVertical>
         <View className="flex flex-col mt-2">
-          <Text className="text-[#b0b0b0] text-[13px] mb-4" style={fonts.light}>
+          <Text className="text-[#b0b0b0] text-base my-4" style={fonts.light}>
             Manage your search engines. Default engines cannot be deleted.
           </Text>
 
@@ -185,28 +227,16 @@ export const ManageSearchEnginesView = ({ navigation }) => {
           </View>
 
           <View className="mt-8">
-            <Text
-              className="text-[#b0b0b0] text-[13px] mb-2"
-              style={fonts.light}
-            >
+            <Text className="text-[#b0b0b0] text-sm mb-2" style={fonts.light}>
               Tips:
             </Text>
-            <Text
-              className="text-[#b0b0b0] text-[11px]"
-              style={fonts.light}
-            >
+            <Text className="text-[#b0b0b0] text-sm mb-1" style={fonts.light}>
               Default engines are built-in and cannot be deleted
             </Text>
-            <Text
-              className="text-[#b0b0b0] text-[11px]"
-              style={fonts.light}
-            >
+            <Text className="text-[#b0b0b0] text-sm mb-1" style={fonts.light}>
               Custom engines can be deleted by tapping the trash icon
             </Text>
-            <Text
-              className="text-[#b0b0b0] text-[11px]"
-              style={fonts.light}
-            >
+            <Text className="text-[#b0b0b0] text-sm" style={fonts.light}>
               Set your default engine in the main Settings
             </Text>
           </View>

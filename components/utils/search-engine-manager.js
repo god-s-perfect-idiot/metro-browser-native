@@ -6,31 +6,31 @@ const DEFAULT_SEARCH_ENGINES = [
     id: "google",
     name: "Google",
     url: "https://www.google.com/search?q={q}",
-    icon: "🔍"
+    icon: ""
   },
   {
     id: "bing",
     name: "Bing",
     url: "https://www.bing.com/search?q={q}",
-    icon: "🔎"
+    icon: ""
   },
   {
     id: "yahoo",
     name: "Yahoo",
     url: "https://search.yahoo.com/search?p={q}",
-    icon: "📧"
+    icon: ""
   },
   {
     id: "duckduckgo",
     name: "DuckDuckGo",
     url: "https://www.duckduckgo.com/?q={q}",
-    icon: "🦆"
+    icon: ""
   },
   {
     id: "ecosia",
     name: "Ecosia",
     url: "https://www.ecosia.org/search?q={q}",
-    icon: "🌱"
+    icon: ""
   }
 ];
 
@@ -106,7 +106,7 @@ export const addCustomSearchEngine = async (engine) => {
     const newEngine = {
       ...engine,
       id: `custom_${Date.now()}`,
-      icon: engine.icon || "🔍"
+      icon: engine.icon || ""
     };
     
     validCustomEngines.push(newEngine);

@@ -1,32 +1,41 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, Alert } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { AppTitle } from "./core/AppTitle";
 import { PageTitle } from "./core/Pagetitle";
 import { TextBox } from "./core/TextBox";
 import { Button } from "./core/Button";
+import { Toast } from "./core/Toast";
+import { Alert } from "./core/Alert";
 import { fonts } from "../styles/fonts";
 import { addCustomSearchEngine } from "./utils/search-engine-manager";
 
 export const AddSearchEngineView = ({ navigation }) => {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
-  const [icon, setIcon] = useState("🔍");
   const [isLoading, setIsLoading] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
 
   const validateForm = () => {
     if (!name.trim()) {
-      Alert.alert("Error", "Please enter a search engine name");
+      showToast("Please enter a search engine name");
       return false;
     }
 
     if (!url.trim()) {
-      Alert.alert("Error", "Please enter a search URL");
+      showToast("Please enter a search URL");
       return false;
     }
 
     // Basic URL validation - should contain {q} placeholder
     if (!url.includes("{q}")) {
-      Alert.alert("Error", "URL must contain {q} placeholder for search query");
+      showToast("URL must contain {q} placeholder for search query");
       return false;
     }
 
@@ -42,21 +51,14 @@ export const AddSearchEngineView = ({ navigation }) => {
       const newEngine = {
         name: name.trim(),
         url: url.trim(),
-        icon: icon.trim() || "🔍",
+        icon: "",
       };
 
       await addCustomSearchEngine(newEngine);
 
-      Alert.alert("Success", "Custom search engine added successfully!", [
-        {
-          text: "OK",
-          onPress: () => {
-            navigation.navigate("ManageSearchEngines");
-          },
-        },
-      ]);
+      setAlertVisible(true);
     } catch (error) {
-      Alert.alert("Error", "Failed to add search engine. Please try again.");
+      showToast("Failed to add search engine. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -68,6 +70,26 @@ export const AddSearchEngineView = ({ navigation }) => {
 
   return (
     <View className="flex flex-col w-full h-full bg-black p-4">
+      <Toast
+        visible={toastVisible}
+        message={toastMessage}
+        type="error"
+        onHide={() => setToastVisible(false)}
+      />
+      <Alert
+        visible={alertVisible}
+        title="Success"
+        message="Custom search engine added successfully!"
+        buttons={[
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate("ManageSearchEngines");
+            },
+          },
+        ]}
+        onClose={() => setAlertVisible(false)}
+      />
       <AppTitle title="Add Search Engine" />
       <PageTitle title="Custom Search" />
 
@@ -78,32 +100,24 @@ export const AddSearchEngineView = ({ navigation }) => {
             placeholder for the search query.
           </Text>
 
-          <View className="flex flex-col gap-4 justify-start items-start h-12">
+          <View className="flex flex-col gap-4 justify-start items-start h-fit">
             <TextBox
               placeholder="Name"
               value={name}
               onChangeText={setName}
               title="Search Engine Name"
-              boxOverrides="!h-8 !py-0"
+              boxOverrides="h-auto !py-2"
             />
           </View>
 
-          <View className="flex flex-col gap-4 justify-start items-start h-12">
+          <View className="flex flex-col gap-4 justify-start items-start h-12fit">
             <TextBox
               placeholder="https://example.com/search?q={q}"
               value={url}
               onChangeText={setUrl}
               title="Search URL"
-              boxOverrides="!h-8 !py-0"
-            />
-          </View>
-          <View className="flex flex-col gap-4 justify-start items-start h-12">
-            <TextBox
-              placeholder="emoji or text"
-              value={icon}
-              onChangeText={setIcon}
-              title="Icon"
-              boxOverrides="!h-8 !py-0"
+              boxOverrides="h-auto !py-2"
+              classOverride="text-black placeholder:!text-[#f1f1f1]"
             />
           </View>
 

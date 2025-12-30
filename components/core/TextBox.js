@@ -97,6 +97,7 @@ export const TextBox = ({
         textAlign="left"
         autoCorrect={false}
         autoCapitalize="none"
+        placeholderTextColor="#b0b0b0"
       />
     );
   } else {

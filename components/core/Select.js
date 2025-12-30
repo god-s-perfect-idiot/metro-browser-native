@@ -73,7 +73,7 @@ export const Select = ({
               ref={contentRef}
               style={{
                 backgroundColor: 'white',
-                borderColor: '#a013ec',
+                borderColor: '#046ab8',
                 borderWidth: 2,
                 paddingVertical: 8,
                 paddingRight: 16,
@@ -104,7 +104,7 @@ export const Select = ({
                         <Text
                           className={`text-base ${
                             selected.value === option.value
-                              ? "text-[#a013ec]"
+                              ? "text-[#046ab8]"
                               : "text-black"
                           }`}
                           style={fonts.regular}

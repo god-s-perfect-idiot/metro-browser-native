@@ -21,21 +21,13 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [initialUrl, setInitialUrl] = useState(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const navigationRef = useNavigationContainerRef();
 
   useEffect(() => {
     async function initializeApp() {
-      // Load fonts first
+      // Load fonts first - only SegoeWPN
       await Font.loadAsync({
-        NotoSans_Light: require("./assets/fonts/NotoSans_Light.ttf"),
-        NotoSans_Regular: require("./assets/fonts/NotoSans_Regular.ttf"),
-        NotoSans_SemiBold: require("./assets/fonts/NotoSans_SemiBold.ttf"),
-        Selawk: require("./assets/fonts/Selawk.ttf"),
-        SelawkLight: require("./assets/fonts/SelawkLight.ttf"),
-        SelawkSemiBold: require("./assets/fonts/SelawkSemiBold.ttf"),
-        SegoeWP: require("./assets/fonts/SegoeWP.ttf"),
-        SegoeWPLight: require("./assets/fonts/SegoeWPLight.ttf"),
-        SegoeWPSemiBold: require("./assets/fonts/SegoeWPSemiBold.ttf"),
         SegoeWPN: require("./assets/fonts/SegoeWPN.ttf"),
         SegoeWPNLighter: require("./assets/fonts/SegoeWPN-Light.ttf"),
         SegoeWPNLight: require("./assets/fonts/SegoeWPN-Semilight.ttf"),
@@ -52,6 +44,11 @@ export default function App() {
       if (!quickButton) await AsyncStorage.setItem('quickButton', 'tabs');
       const searchEngine = await AsyncStorage.getItem("searchEngine");
       if (!searchEngine) await AsyncStorage.setItem('searchEngine', 'google');
+      const fullscreenPref = await AsyncStorage.getItem("fullscreen");
+      if (!fullscreenPref) await AsyncStorage.setItem('fullscreen', 'disabled');
+      
+      // Load fullscreen preference
+      setIsFullscreen(fullscreenPref === 'enabled');
       
       // Initialize font preference AFTER fonts are loaded
       await initFontPreference();
@@ -95,11 +92,24 @@ export default function App() {
     return null;
   }
 
+  // Function to check and update fullscreen preference
+  const checkFullscreenPreference = async () => {
+    const fullscreen = await AsyncStorage.getItem("fullscreen");
+    setIsFullscreen(fullscreen === 'enabled');
+  };
+
   return (
     <SafeAreaProvider>
-      <NavigationContainer ref={navigationRef}>
+      <NavigationContainer 
+        ref={navigationRef}
+        onStateChange={checkFullscreenPreference}
+      >
         <SafeAreaView style={{ flex: 1 }}>
-          <StatusBar backgroundColor="black" barStyle="light-content" />
+          <StatusBar 
+            backgroundColor="black" 
+            barStyle="light-content" 
+            hidden={isFullscreen}
+          />
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen 
               name="MainView" 

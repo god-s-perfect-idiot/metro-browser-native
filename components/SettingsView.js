@@ -19,6 +19,7 @@ export const SettingsView = ({ navigation }) => {
   const [searchEngine, setSearchEngine] = useState("google");
   const [searchEngines, setSearchEngines] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [fullscreen, setFullscreen] = useState("disabled");
 
   const fetchData = async () => {
     try {
@@ -26,19 +27,21 @@ export const SettingsView = ({ navigation }) => {
       const quickButton = await AsyncStorage.getItem("quickButton");
       const defaultEngine = await getDefaultSearchEngine();
       const engines = await getAllSearchEngines();
+      const fullscreenPref = await AsyncStorage.getItem("fullscreen");
       
       if (quickButton) setQuickButton(quickButton);
       if (defaultEngine) setSearchEngine(defaultEngine);
+      if (fullscreenPref) setFullscreen(fullscreenPref);
       setSearchEngines(engines);
     } catch (error) {
       console.error("Error loading settings:", error);
       // Set fallback values
       setSearchEngines([
-        { id: "google", name: "🔍 Google", value: "google" },
-        { id: "bing", name: "🔎 Bing", value: "bing" },
-        { id: "yahoo", name: "📧 Yahoo", value: "yahoo" },
-        { id: "duckduckgo", name: "🦆 DuckDuckGo", value: "duckduckgo" },
-        { id: "ecosia", name: "🌱 Ecosia", value: "ecosia" }
+        { id: "google", name: "Google", value: "google" },
+        { id: "bing", name: "Bing", value: "bing" },
+        { id: "yahoo", name: "Yahoo", value: "yahoo" },
+        { id: "duckduckgo", name: "DuckDuckGo", value: "duckduckgo" },
+        { id: "ecosia", name: "Ecosia", value: "ecosia" }
       ]);
     } finally {
       setIsLoading(false);
@@ -78,6 +81,19 @@ export const SettingsView = ({ navigation }) => {
           />
           <Select
             options={[
+              { name: "enabled", value: "enabled" },
+              { name: "disabled", value: "disabled" },
+            ]}
+            defaultValue={fullscreen}
+            title="Fullscreen Mode"
+            onChange={async (option) => {
+              await AsyncStorage.setItem("fullscreen", option.value);
+              setFullscreen(option.value);
+            }}
+            classOverride="mt-6"
+          />
+          <Select
+            options={[
               { name: "tabs", value: "tabs" },
               { name: "favourites", value: "favourites" },
             ]}
@@ -100,7 +116,7 @@ export const SettingsView = ({ navigation }) => {
           {!isLoading && (
             <Select
               options={searchEngines.map(engine => ({
-                name: `${engine.icon} ${engine.name}`,
+                name: engine.name,
                 value: engine.id
               }))}
               defaultValue={searchEngine}
