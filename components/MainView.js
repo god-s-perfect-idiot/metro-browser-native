@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, StatusBar, BackHandler, Keyboard } from "react-native";
+import { View, Text, StatusBar, BackHandler, Keyboard, Animated, Dimensions } from "react-native";
 import WebView from "react-native-webview";
 import BottomBar from "./compound/MainBottomBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -30,6 +30,7 @@ export const MainView = ({ navigation, route }) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const webViewRef = useRef(null);
   const loadingTimeoutRef = useRef(null);
+  const flipAnimation = useRef(new Animated.Value(90)).current; // Start at 90 degrees (flipped)
 
   const setTabUrl = async (url) => {
     const tabData = await AsyncStorage.getItem("tabs");
@@ -106,6 +107,14 @@ export const MainView = ({ navigation, route }) => {
     useCallback(() => {
       // Close the bottom bar when navigating back to MainView
       setNavBarExpanded(false);
+      
+      // Trigger flip animation when view comes into focus
+      flipAnimation.setValue(90);
+      Animated.timing(flipAnimation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
       
       const fetchData = async () => {
         // Check if URL was passed via route params (from intent)
@@ -228,28 +237,60 @@ export const MainView = ({ navigation, route }) => {
     });
   };
 
+  // Interpolate rotation value for the flip animation
+  const rotateY = flipAnimation.interpolate({
+    inputRange: [0, 90],
+    outputRange: ['0deg', '90deg'],
+  });
+
+  // Get container width for left-edge rotation calculation
+  const [containerWidth, setContainerWidth] = useState(0);
+  
+  const handleLayout = (event) => {
+    const { width } = event.nativeEvent.layout;
+    if (width > 0) {
+      setContainerWidth(width);
+    }
+  };
+
   return (
-    <View className="w-full h-full flex flex-col">
+    <View className="w-full h-full flex flex-col" style={{ backgroundColor: '#000000' }}>
       <StatusBar />
       {url !== "" ? (
-        <AppWebView
-          url={url}
-          webViewRef={webViewRef}
-          preLoad={(e) => {
-            setIsLoading(true);
-            updateUrl(e.nativeEvent.url);
-            addToHistory(e.nativeEvent.url);
-          }}
-          postLoad={() => setIsLoading(false)}
-          onLoad={(e) => setLoader(e.nativeEvent.progress)}
-          classOverrides={"flex-1 w-full h-full"}
-          navBarRef={{
-            state: navBarExpanded,
-            handler: setNavBarExpanded,
-          }}
-        />
+        <View 
+          style={{ flex: 1, backgroundColor: '#000000' }}
+          onLayout={handleLayout}
+        >
+          <Animated.View
+            style={{
+              flex: 1,
+              transform: [
+                { translateX: containerWidth > 0 ? -containerWidth / 2 : 0 },
+                { rotateY },
+                { translateX: containerWidth > 0 ? containerWidth / 2 : 0 },
+              ],
+            }}
+          >
+            <AppWebView
+              url={url}
+              webViewRef={webViewRef}
+              preLoad={(e) => {
+                setIsLoading(true);
+                updateUrl(e.nativeEvent.url);
+                addToHistory(e.nativeEvent.url);
+              }}
+              postLoad={() => setIsLoading(false)}
+              onLoad={(e) => setLoader(e.nativeEvent.progress)}
+              classOverrides={"flex-1 w-full h-full"}
+              navBarRef={{
+                state: navBarExpanded,
+                handler: setNavBarExpanded,
+              }}
+            />
+          </Animated.View>
+        </View>
       ) : (
-        <View className="bg-white flex-1 h-full w-full"></View>
+        <View className="bg-black flex-1 h-full w-full"></View>
       )}
       <BottomBar
         url={url}
