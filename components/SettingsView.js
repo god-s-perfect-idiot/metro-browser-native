@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, Animated } from "react-native";
 import { AppTitle } from "./core/AppTitle";
 import { PageTitle } from "./core/Pagetitle";
 import { TextBox } from "./core/TextBox";
@@ -6,7 +6,7 @@ import { Select } from "./core/Select";
 import { Button } from "./core/Button";
 import Link from "./core/Link";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { clearHistory } from "./utils/history-manager";
 import { getAllSearchEngines, setDefaultSearchEngine, getDefaultSearchEngine } from "./utils/search-engine-manager";
 import { useFocusEffect } from "@react-navigation/native";
@@ -20,6 +20,8 @@ export const SettingsView = ({ navigation }) => {
   const [searchEngines, setSearchEngines] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState("disabled");
+  const flipAnimation = useRef(new Animated.Value(90)).current; // Start at 90 degrees (flipped out)
+  const [containerWidth, setContainerWidth] = useState(0);
 
   const fetchData = async () => {
     try {
@@ -48,18 +50,57 @@ export const SettingsView = ({ navigation }) => {
     }
   };
 
-  // Use focus effect to reload data when screen comes into focus
+  // Handle layout to get container width for rotation axis
+  const handleLayout = (event) => {
+    const { width } = event.nativeEvent.layout;
+    if (width > 0) {
+      setContainerWidth(width);
+    }
+  };
+
+  // Use focus effect to reload data and trigger flip-in animation when screen comes into focus
   useFocusEffect(
     useCallback(() => {
+      // Trigger flip-in animation (rotate from 90 to 0 degrees)
+      flipAnimation.setValue(90);
+      Animated.timing(flipAnimation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+      
       fetchData();
     }, [])
   );
 
+  // Interpolate rotation value for the flip animation
+  // Rotating around the LEFT edge (same as MainView)
+  // Starts at -90deg (where MainView ended, behind/under the screen) and rotates to 0deg to flip IN from behind
+  const rotateY = flipAnimation.interpolate({
+    inputRange: [0, 90],
+    outputRange: ['0deg', '90deg'],
+  });
+
   return (
-    <View className="flex flex-col w-full h-full bg-black p-4">
-      <AppTitle title="Settings" />
-      <PageTitle title="Metro Browser" classOverride={"w-[200%]"}/>
-      <ScrollView className="flex-1" bounces alwaysBounceVertical>
+    <View 
+      className="flex flex-col w-full h-full bg-black"
+      style={{ flex: 1, perspective: 1000 }}
+      onLayout={handleLayout}
+    >
+      <Animated.View
+        style={{
+          flex: 1,
+          padding: 16,
+          transform: [
+            { translateX: containerWidth > 0 ? -containerWidth / 2 : 0 },
+            { rotateY },
+            { translateX: containerWidth > 0 ? containerWidth / 2 : 0 },
+          ],
+        }}
+      >
+        <AppTitle title="Settings" />
+        <PageTitle title="Metro Browser" classOverride={"w-[200%]"}/>
+        <ScrollView className="flex-1" bounces alwaysBounceVertical>
         <View className="flex flex-col mt-6">
           <Select
             options={[
@@ -165,6 +206,7 @@ export const SettingsView = ({ navigation }) => {
           />
         </View>
       </ScrollView>
+      </Animated.View>
     </View>
   );
 };

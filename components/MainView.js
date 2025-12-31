@@ -30,7 +30,7 @@ export const MainView = ({ navigation, route }) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const webViewRef = useRef(null);
   const loadingTimeoutRef = useRef(null);
-  const flipAnimation = useRef(new Animated.Value(90)).current; // Start at 90 degrees (flipped)
+  const flipAnimation = useRef(new Animated.Value(0)).current; // Start at 0 degrees (normal view)
 
   const setTabUrl = async (url) => {
     const tabData = await AsyncStorage.getItem("tabs");
@@ -103,12 +103,29 @@ export const MainView = ({ navigation, route }) => {
     return () => backHandler.remove(); // Clean up the event listener
   }, [navigation, navBarExpanded]);
 
+  // Function to handle flip-out animation before navigating to Settings
+  const handleFlipOutToSettings = useCallback(() => {
+    // Close the menu if open
+    if (navBarExpanded) {
+      setNavBarExpanded(false);
+    }
+    
+    // Flip out animation using negative values (rotate to -90 degrees to flip out right)
+    // Use negative range for exit
+    Animated.timing(flipAnimation, {
+      toValue: -90,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [navBarExpanded]);
+
   useFocusEffect(
     useCallback(() => {
       // Close the bottom bar when navigating back to MainView
       setNavBarExpanded(false);
       
-      // Trigger flip animation when view comes into focus
+      // Trigger flip-in animation when view comes into focus (same as SettingsView)
+      // Uses positive range: 90 -> 0 (flip in from behind)
       flipAnimation.setValue(90);
       Animated.timing(flipAnimation, {
         toValue: 0,
@@ -238,9 +255,13 @@ export const MainView = ({ navigation, route }) => {
   };
 
   // Interpolate rotation value for the flip animation
+  // Entry: uses positive range [0, 90] -> ['0deg', '90deg'] (flip in from behind, same as SettingsView)
+  // Exit: uses negative range [-90, 0] -> ['-90deg', '0deg'] (flip out to the right)
+  // Combined range handles both directions
   const rotateY = flipAnimation.interpolate({
-    inputRange: [0, 90],
-    outputRange: ['0deg', '90deg'],
+    inputRange: [-90, 0, 90],
+    outputRange: ['-90deg', '0deg', '90deg'],
+    extrapolate: 'clamp',
   });
 
   // Get container width for left-edge rotation calculation
@@ -254,16 +275,14 @@ export const MainView = ({ navigation, route }) => {
   };
 
   return (
-    <View className="w-full h-full flex flex-col" style={{ backgroundColor: '#000000' }}>
+    <View className="w-full h-full flex flex-col" style={{ backgroundColor: '#000000' }} onLayout={handleLayout}>
       <StatusBar />
       {url !== "" ? (
-        <View 
-          style={{ flex: 1, backgroundColor: '#000000' }}
-          onLayout={handleLayout}
-        >
+        <View style={{ flex: 1, backgroundColor: '#000000', perspective: 1000 }}>
           <Animated.View
             style={{
               flex: 1,
+              width: '100%',
               transform: [
                 { translateX: containerWidth > 0 ? -containerWidth / 2 : 0 },
                 { rotateY },
@@ -305,6 +324,7 @@ export const MainView = ({ navigation, route }) => {
           handler: setNavBarExpanded,
         }}
         keyboardHeight={keyboardHeight}
+        onNavigateToSettings={handleFlipOutToSettings}
       />
     </View>
   );

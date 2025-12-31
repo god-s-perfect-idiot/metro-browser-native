@@ -23,6 +23,7 @@ const Menu = ({
   webViewRef,
   navBarRef,
   keyboardHeight,
+  onNavigateToSettings,
 }) => {
   const [quickButton, setQuickButton] = useState("tabs");
   const [isReloading, setIsReLoading] = useState(false);
@@ -138,7 +139,18 @@ const Menu = ({
             to={"https://google.com"}
             classOverride="mt-4 text-2xl"
             text="settings"
-            onPress={() => navigation.navigate("Settings")}
+            onPress={() => {
+              // Close the menu first
+              navBarRef.handler(false);
+              // Trigger flip-out animation
+              if (onNavigateToSettings) {
+                onNavigateToSettings();
+              }
+              // Navigate after animation delay
+              setTimeout(() => {
+                navigation.navigate("Settings");
+              }, 300);
+            }}
           />
         </AnimatedView>
       </View>
