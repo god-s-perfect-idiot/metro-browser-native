@@ -187,7 +187,7 @@ const Menu = ({
                     loader !== 1
                       ? "w-[" + Math.round((loader * 10) / 10) * 100 + "%]"
                       : "w-full"
-                  } h-[10%] bg-[#87f]`}
+                  } h-[10%] bg-[#046ab8]`}
                 />
               )}
               <View className="w-full flex flex-row justify-center items-center px-6">
