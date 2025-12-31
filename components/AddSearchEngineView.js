@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import React, { useState, useRef, useCallback, useEffect } from "react";
+import { View, Text, ScrollView, Animated, Dimensions, BackHandler } from "react-native";
 import { AppTitle } from "./core/AppTitle";
 import { PageTitle } from "./core/Pagetitle";
 import { TextBox } from "./core/TextBox";
@@ -8,6 +8,9 @@ import { Toast } from "./core/Toast";
 import { Alert } from "./core/Alert";
 import { fonts } from "../styles/fonts";
 import { addCustomSearchEngine } from "./utils/search-engine-manager";
+import { useFocusEffect } from "@react-navigation/native";
+
+const screenHeight = Dimensions.get('window').height;
 
 export const AddSearchEngineView = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -16,6 +19,7 @@ export const AddSearchEngineView = ({ navigation }) => {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [alertVisible, setAlertVisible] = useState(false);
+  const slideAnimation = useRef(new Animated.Value(screenHeight)).current; // Start below screen
 
   const showToast = (message) => {
     setToastMessage(message);
@@ -64,12 +68,60 @@ export const AddSearchEngineView = ({ navigation }) => {
     }
   };
 
+  // Function to handle slide-down exit animation
+  const handleSlideDownAndGoBack = useCallback(() => {
+    // Slide down animation before navigating back
+    Animated.timing(slideAnimation, {
+      toValue: screenHeight,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => {
+      // Navigate back after animation completes
+      navigation.goBack();
+    });
+  }, [navigation]);
+
   const handleCancel = () => {
-    navigation.goBack();
+    handleSlideDownAndGoBack();
   };
 
+  // Handle hardware back button
+  useEffect(() => {
+    const backAction = () => {
+      handleSlideDownAndGoBack();
+      return true; // Prevent default behavior
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [handleSlideDownAndGoBack]);
+
+  // Use focus effect to trigger slide-in animation when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      // Trigger slide-in animation (slide from bottom to top)
+      slideAnimation.setValue(screenHeight);
+      Animated.timing(slideAnimation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }, [])
+  );
+
   return (
-    <View className="flex flex-col w-full h-full bg-black p-4">
+    <View className="flex flex-col w-full h-full bg-black" style={{ flex: 1 }}>
+      <Animated.View
+        style={{
+          flex: 1,
+          padding: 16,
+          transform: [{ translateY: slideAnimation }],
+        }}
+      >
       <Toast
         visible={toastVisible}
         message={toastMessage}
@@ -84,7 +136,7 @@ export const AddSearchEngineView = ({ navigation }) => {
           {
             text: "OK",
             onPress: () => {
-              navigation.navigate("ManageSearchEngines");
+              navigation.navigate("ManageSearchEngines", { skipAnimation: true });
             },
           },
         ]}
@@ -170,6 +222,7 @@ export const AddSearchEngineView = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
+      </Animated.View>
     </View>
   );
 };

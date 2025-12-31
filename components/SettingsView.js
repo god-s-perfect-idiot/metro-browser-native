@@ -5,6 +5,7 @@ import { TextBox } from "./core/TextBox";
 import { Select } from "./core/Select";
 import { Button } from "./core/Button";
 import Link from "./core/Link";
+import { Toast } from "./core/Toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState, useRef } from "react";
 import { clearHistory } from "./utils/history-manager";
@@ -20,8 +21,15 @@ export const SettingsView = ({ navigation }) => {
   const [searchEngines, setSearchEngines] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState("disabled");
-  const flipAnimation = useRef(new Animated.Value(90)).current; // Start at 90 degrees (flipped out)
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const flipAnimation = useRef(new Animated.Value(0)).current; // Start at 0 degrees (normal view)
   const [containerWidth, setContainerWidth] = useState(0);
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
 
   const fetchData = async () => {
     try {
@@ -73,12 +81,27 @@ export const SettingsView = ({ navigation }) => {
     }, [])
   );
 
+  // Function to handle flip-out animation before navigating to ManageSearchEngines
+  const handleFlipOutToManageSearchEngines = useCallback(() => {
+    // Flip out animation using negative values (rotate to -90 degrees to flip out right)
+    Animated.timing(flipAnimation, {
+      toValue: -90,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => {
+      // Navigate after animation completes
+      navigation.navigate('ManageSearchEngines');
+    });
+  }, [navigation]);
+
   // Interpolate rotation value for the flip animation
-  // Rotating around the LEFT edge (same as MainView)
-  // Starts at -90deg (where MainView ended, behind/under the screen) and rotates to 0deg to flip IN from behind
+  // Entry: uses positive range [0, 90] -> ['0deg', '90deg'] (flip in from behind)
+  // Exit: uses negative range [-90, 0] -> ['-90deg', '0deg'] (flip out to the right)
+  // Combined range handles both directions
   const rotateY = flipAnimation.interpolate({
-    inputRange: [0, 90],
-    outputRange: ['0deg', '90deg'],
+    inputRange: [-90, 0, 90],
+    outputRange: ['-90deg', '0deg', '90deg'],
+    extrapolate: 'clamp',
   });
 
   return (
@@ -98,6 +121,12 @@ export const SettingsView = ({ navigation }) => {
           ],
         }}
       >
+        <Toast
+          visible={toastVisible}
+          message={toastMessage}
+          type="success"
+          onHide={() => setToastVisible(false)}
+        />
         <AppTitle title="Settings" />
         <PageTitle title="Metro Browser" classOverride={"w-[200%]"}/>
         <ScrollView className="flex-1" bounces alwaysBounceVertical>
@@ -120,7 +149,7 @@ export const SettingsView = ({ navigation }) => {
               }
             }}
           />
-          <Select
+          {/* <Select
             options={[
               { name: "enabled", value: "enabled" },
               { name: "disabled", value: "disabled" },
@@ -132,7 +161,7 @@ export const SettingsView = ({ navigation }) => {
               setFullscreen(option.value);
             }}
             classOverride="mt-6"
-          />
+          /> */}
           <Select
             options={[
               { name: "tabs", value: "tabs" },
@@ -176,15 +205,14 @@ export const SettingsView = ({ navigation }) => {
         <View className="flex flex-col mt-12 justify-start items-start">
           <Button
             text="manage search engines"
-            onPress={() => {
-              navigation.navigate('ManageSearchEngines');
-            }}
+            onPress={handleFlipOutToManageSearchEngines}
             classOverride="px-auto mb-4"
           />
           <Button
             text="delete history"
-            onPress={() => {
-              clearHistory();
+            onPress={async () => {
+              await clearHistory();
+              showToast("History deleted successfully");
             }}
             classOverride="px-auto"
           />

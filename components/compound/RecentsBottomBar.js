@@ -20,7 +20,7 @@ const Menu = ({
                 {
                     text: "delete",
                     onPress: methods.delete,
-                    Icon: <Fontisto name="trash" size={16} color="white" />
+                    Icon: <Fontisto name="trash" size={16} color={props.disabled ? "#8a8a8a" : "white"} />
                 }
             ]}
             disabled={props.disabled}

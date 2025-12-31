@@ -121,9 +121,9 @@ export default function App() {
             <Stack.Screen name="AddToFavourites" component={AddFavorite} options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="Settings" component={SettingsView} options={{ animation: 'none' }} />
             <Stack.Screen name="Recent" component={RecentView} options={{ animation: 'slide_from_right' }} />
-            <Stack.Screen name="Tabs" component={TabsView} options={{ animation: 'slide_from_right' }} />
-            <Stack.Screen name="ManageSearchEngines" component={ManageSearchEnginesView} options={{ animation: 'slide_from_right' }} />
-            <Stack.Screen name="AddSearchEngine" component={AddSearchEngineView} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="Tabs" component={TabsView} options={{ animation: 'slide_from_right' }} />            
+            <Stack.Screen name="ManageSearchEngines" component={ManageSearchEnginesView} options={{ animation: 'none' }} />
+            <Stack.Screen name="AddSearchEngine" component={AddSearchEngineView} options={{ animation: 'none' }} />
           </Stack.Navigator>
         </SafeAreaView>
       </NavigationContainer>
